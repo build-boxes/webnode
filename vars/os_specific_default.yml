@@ -1,0 +1,24 @@
+---
+# OS Specific Vars for this Playbook or Roles.
+# Vars for Role: hammadrauf.apache_vhosts
+#
+ap2_vapache_user: "www-data"
+ap2_vapache_group: "www-data"
+apache_vhosts_defaults:
+  directory: /etc/apache2/sites-available
+  owner: apache
+  group: apache
+  dir_mode: "0755"
+  file_mode: "0640"
+  addr: "*"
+  proxy_preserve_host: yes
+  rewrite_engine: yes
+  balancer:
+    name: tomcat-cluster
+    members:
+      - ajp://backend1.domain.local:8080 route=backend1-jvm
+      - ajp://backend2.domain.local:8080 route=backend2-jvm
+    lbmethod: byrequests
+    sticky_session: ROUTEID
+  error_log: /var/log/apache/my_error_log
+  state: present

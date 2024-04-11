@@ -1,0 +1,85 @@
+---
+####
+# Ansible Playbook Variables:
+#     - Can include Role default variables that need to be overridden by this playbook.
+#     - Secret Variables are saved 'secrets.yml' in seperate file and should not be
+#       version controlled. Also they should be encrypted for safety using
+#       ansible-vault.
+#     - See ../docs sub-folder for help on how to use ansible-vault.
+####
+
+# Vars for Role: hammadrauf.sudousers
+su_users:
+  - username: "{{ su_vault_vmuser1 }}"
+    password: "{{ su_vault_vmpwd1 }}"
+    is_super_user: true
+    sudo_rules: []
+  - username: "{{ su_vault_vmuser2 }}"
+    password: "{{ su_vault_vmpwd2 }}"
+    is_super_user: false
+    sudo_rules:
+      - "ALL=(ALL)   NOPASSWD: /usr/bin/su - {{ su_vault_vmuser1 }}"
+      - "ALL=(root)   NOPASSWD: /bin/su - {{ su_vault_vmuser1 }}"
+
+# Vars for Role: fauust.mariadb
+mariadb_data_dir: "/var/lib/mysql"
+mariadb_port: "{{ su_vault_mariadb_port }}"
+mariadb_databases:
+  - name: "{{ su_vault_db_name }}"
+    collation: utf8_general_ci
+    encoding: utf8
+    replicate: false
+mariadb_users:
+  - name: "{{ su_vault_mariadb_user }}"
+    password: "{{ su_vault_mariadb_pwd }}"
+    host: "127.0.0.1"
+    priv: "*.*:USAGE/{{ su_vault_db_name }}.*:ALL,GRANT"
+    state: present
+mariadb_backup_db: true
+mariadb_backup_db_cron_min: 50
+mariadb_backup_db_cron_hour: 00
+mariadb_backup_db_dir: /opt/backup
+mariadb_backup_db_rotation: 15
+mariadb_backup_cron_std_output: "2>&1 | tee"
+mariadb_backup_db_name:
+  - "{{ su_vault_db_name }}"
+
+# Vars for Role: hammadrauf.apache2    
+ap2_vapache_default_content: "/var/www/html"
+ap2_template_index: "script-uploaded-files/index.html.j2"
+ap2_file_css: "script-uploaded-files/site_styles.css"
+ap2_file_ico: "script-uploaded-files/beach-ball.ico"
+#
+ap2_vapache_remove_default: false
+ap2_list_custom_content_folders:
+  - /var/www/somesite
+  - /var/www/hahahoho
+
+# Vars for Role: geerlingguy.php
+php_enable_php_fpm: true
+php_fpm_state: started
+php_fpm_enabled_on_boot: true
+
+wordpress_source_name: "wordpress-6.6.tar.gz"
+#wordpress_source_url: "https://wordpress.org/wordpress-6.6.tar.gz"
+# Actual Download URL changed to avoid HTTP 429 error during development of webnode
+wordpress_source_url: "https://andromedabay.ddns.net/d45623_rhel9_4/wordpress-6.6.tar.gz"
+wordpress_source_sha1: "6bdc580973c6c5e44c0c6164c348217152874817"
+wordpress_untar_folder: "{{ ap2_vapache_default_content }}"
+wordpress_context_folder: ""
+wordpress_cli_source_url: "https://github.com/wp-cli/wp-cli/releases/download/v2.10.0/wp-cli-2.10.0.phar"
+wordpress_cli_source_sha256: "4c6a93cecae7f499ca481fa7a6d6d4299c8b93214e5e5308e26770dbfd3631df"
+wordpress_cli_bin_path: "/usr/local/bin/wp"
+
+wordpress_config_flag: true
+wordpress_config_blog_title: "WebNode Wordpress"
+wordpress_config_admin_id: "{{ wp_admin_id }}"
+wordpress_config_admin_pwd: "{{ wp_admin_pwd }}"
+wordpress_config_admin_email: "{{ wp_admin_email }}"
+wordpress_config_db_user: "{{ su_vault_mariadb_user }}"
+wordpress_config_db_pwd: "{{ su_vault_mariadb_pwd }}"
+wordpress_config_db_name: "{{ su_vault_db_name }}"
+wordpress_config_db_port: "{{ su_vault_mariadb_port }}"
+
+wordpress_db_restore_flag: false
+wordpress_db_restore_targz_name: "{{ su_vault_db_name }}_dump.sql.tar.gz"

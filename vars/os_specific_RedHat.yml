@@ -1,0 +1,49 @@
+---
+# OS Specific Vars for this Playbook or Roles.
+# Vars for Role: hammadrauf.apache_vhosts
+#
+ap2_vapache_user: "apache"
+ap2_vapache_group: "apache"
+apache_vhosts_defaults:
+  directory: "{{ ap2_vapache_config_folder }}"
+  owner: apache
+  group: apache
+  dir_mode: "0755"
+  file_mode: "0640"
+  addr: "*"
+  proxy_preserve_host: yes
+  rewrite_engine: yes
+  balancer:
+    name: tomcat-cluster
+    members:
+      - ajp://backend1.domain.local:8080 route=backend1-jvm
+      - ajp://backend2.domain.local:8080 route=backend2-jvm
+    lbmethod: byrequests
+    sticky_session: ROUTEID
+  error_log: /var/log/apache/my_error_log
+  state: present
+
+mariadb_use_official_repo: true
+mariadb_use_official_repo_version: "10.11"
+mariadb_use_official_repo_url: "https://mirror.its.dal.ca/mariadb/yum/10.11/rhel/9.2/x86_64/"
+
+# Vars for Role: geerlingguy.php
+php_packages:
+  - php
+  - php-cli
+  - php-common
+  - php-devel
+  - php-fpm
+  - php-gd
+  - php-ldap
+  - php-mbstring
+  - php-opcache
+  - php-pdo
+  - php-pear
+  - php-pecl-apcu
+  - php-xml
+#  - php-xmlrpc
+php_packages_extra:
+#  - libapache2-mod-php8.2
+  - php-mysqlnd
+  - php-cli

@@ -1,0 +1,42 @@
+/* Reset default styles */
+body, h1, h2, p, ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #abca57;
+}
+
+header {
+    background-color: #581414;
+    color: #70a36e;
+    text-align: center;
+    padding: 20px 0;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+.row {
+    display: flex;
+}
+
+.column {
+    flex: 1;
+    padding: 20px;
+    background-color: #3ccef3;
+    border: 1px solid #62c3f0;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+/* Responsive layout */
+@media screen and (max-width: 400px) {
+    .row {
+        flex-direction: column;
+    }
+}

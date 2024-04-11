@@ -1,0 +1,9 @@
+---
+roles:
+  - geerlingguy.repo-epel
+  - geerlingguy.repo-remi
+  - hammadrauf.sudousers
+  - fauust.mariadb
+  - hammadrauf.apache2
+  - geerlingguy.php
+

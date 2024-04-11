@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="site_styles.css">
+    <title>WebNode is here</title>
+</head>
+<body>
+    <header>
+        <h1>WebNode is on '{{ ansible_distribution | capitalize }}'</h1>
+    </header>
+    <main>
+        <div class="row">
+            <div class="column">
+                <h2>Game Statistics</h2>
+                <p>Here are some basic hockey metrics:</p>
+                <ul>
+                    <li>Matches Played: x%</li>
+                    <li>Wins: x%</li>
+                    <li>Goals: x Goals secured against y Goals</li>
+                </ul>
+            </div>
+            <div class="column">
+                <!-- Additional base-ball statistics or content can go here -->
+                <a href="https://www.flaticon.com/free-icons/beach-ball" title="beach ball icons">Beach ball icons created by Freepik - Flaticon</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

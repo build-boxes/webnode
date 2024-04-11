@@ -1,0 +1,276 @@
+---
+###########################
+# Ansible Playbook: WebNode- main.yml
+#   Creates WebNode by orchestrating diffrent roles and tasks.
+# Source Repository: https://github.com/build-boxes/webnode
+###########################
+- name: Playbook Create WebNode - main.yml
+  hosts: all
+  vars_files:
+    - ./vars/vars.yml
+    - ./vars/secrets.yml
+  #become: true
+
+  # For Playbook - OS Specifc Vars.
+  pre_tasks:
+    - debug: var=ansible_env.LOGNAME
+    - debug: var=ansible_os_family
+    - name: Load OS specific Vars file for playbook, if any.
+      ansible.builtin.include_vars: "{{ item }}"
+      with_first_found:
+        - "./vars/os_specific_{{ ansible_os_family }}.yml"
+        - "./vars/os_specific_default.yml"
+    - name: Load OS specific Secret Vars file for playbook, if any.
+      ansible.builtin.include_vars: "{{ item }}"
+      with_first_found:
+        - "./vars/vsecrets_{{ ansible_os_family }}.yml"
+        - "./vars/vsecrets_default.yml"
+    - name: Ensure Ansible tmp directory exists with correct permissions for "sudo su unprevilged"
+      become: true
+      ansible.builtin.file:
+        path: "/root/.ansible/tmp"
+        state: directory
+        mode: '1777'
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+      when:
+        - ansible_os_family == 'Debian'  
+    - name: Perform a Block of RHEL Family pre-tasks
+      become: true
+      block:
+        - name: Update and upgrade yum packages
+          yum:
+            update_cache: yes
+            name: '*'
+            state: latest
+        - name: Perform repo-epel role tasks
+          include_role:
+            name: geerlingguy.repo-epel
+        - name: Perform repo-remi role tasks
+          include_role:
+            name: geerlingguy.repo-remi
+        - name: Update yum/dnf configuration 
+          shell: |
+            dnf config-manager --set-enabled epel
+            dnf config-manager --set-enabled remi
+      when:
+        - ansible_os_family == 'RedHat'  
+  # roles:
+  #   - role: hammadrauf.sudousers
+  #   - role: fauust.mariadb
+  #   - role: hammadrauf.apache2
+  #   - role: geerlingguy.php
+
+  tasks:
+    - name: Block to include roles as user root
+      block:
+        - name: Perform Sudouser role tasks
+          include_role:
+            name: hammadrauf.sudousers
+
+        - name: Ensure Ansible tmp directory exists with correct permissions for "sudo su unprevilged"
+          ansible.builtin.file:
+            path: "/home/{{ su_vault_vmuser1 }}/.ansible/tmp"
+            state: directory
+            mode: '1777'
+            owner: "{{ su_vault_vmuser1 }}"
+            group: "{{ su_vault_vmuser1 }}"
+
+        - name: Perform mariadb role tasks
+          include_role:
+            name: fauust.mariadb
+
+        - name: Perform Apache/Httpd role tasks
+          include_role:
+            name: hammadrauf.apache2
+
+        - name: Perform PHP role tasks
+          include_role:
+            name: geerlingguy.php
+      become: true
+
+    - name: Adding groups to su_users list
+      become: true
+      user: 
+        name: "{{ item.username }}"
+        groups:
+          - "{{ mariadb_user }}"
+          - "{{ ap2_vapache_group }}"
+        append: yes
+      with_items:
+        - "{{ su_users }}"    
+
+    - name: Fix php-fpm on RHEL like servers
+      become: true
+      block:
+        - name: Fix php-fpm run file, remove wrong line 1
+          lineinfile:
+            path: /etc/php-fpm.d/www.conf
+            state: absent
+            regexp: "^listen = .*"
+        - name: Fix php-fpm run file, remove wrong line 2
+          lineinfile:
+            path: /etc/php-fpm.d/www.conf
+            state: absent
+            regexp: "^listen.allowed.*"
+        - name: Fix php-fpm run file, insert correct line
+          lineinfile:
+            path: /etc/php-fpm.d/www.conf
+            state: present
+            insertafter: "^[www]\n"
+            line: "listen = /run/php-fpm/www.sock"
+      when:
+        - ansible_os_family == 'RedHat'
+
+    - name: Prepare for Wordpress by deleting index.html file
+      become: true
+      file:
+        path: "{{ ap2_vapache_default_content }}/index.html"
+        state: absent
+
+    # Reference: Installing: https://make.wordpress.org/cli/handbook/guides/installing/
+    # Refernce: Using: https://make.wordpress.org/cli/handbook/how-to/how-to-install/
+    - name: Download Wordpress-cli
+      become: true    
+      get_url:
+        url: "{{ wordpress_cli_source_url }}"
+        dest: "{{ wordpress_cli_bin_path }}"
+        checksum: "sha256:{{ wordpress_cli_source_sha256 }}"
+        mode: '0755'
+
+    - name: Ensure Downloads directory exists
+      become: true
+      ansible.builtin.file:
+        path: "/home/{{ su_vault_vmuser1 }}/Downloads"
+        state: directory
+        mode: '0775'
+        owner: "{{ su_vault_vmuser1 }}"
+        group: "{{ su_vault_vmuser1 }}"
+
+    - name: Download source code for Wordpress
+      become: true
+      get_url:
+        url: "{{ wordpress_source_url }}"
+        dest: "/home/{{ su_vault_vmuser1 }}/Downloads/{{ wordpress_source_name }}"
+        checksum: "sha1:{{ wordpress_source_sha1 }}"
+        owner: "{{ su_vault_vmuser1 }}"
+        group: "{{ su_vault_vmuser1 }}"
+
+    - name: Determine absolute untaring folder path, when no context folder given
+      set_fact:
+        absolute_untar_folder: "{{ wordpress_untar_folder }}"
+        cacheable: yes
+      when: not wordpress_context_folder
+
+    - name: Determine untaring folder with sub folder context, and create the context sub folder.
+      block:
+        - name: Determine absolute untaring folder path, when context folder given
+          set_fact:
+            absolute_untar_folder: "{{ wordpress_untar_folder }}/{{ wordpress_context_folder }}"
+            cacheable: yes
+        - name: Create the untaring subfolder, when context folder given
+          become: true        
+          ansible.builtin.file:
+            path: "{{ absolute_untar_folder }}"
+            state: directory
+            owner: "{{ ap2_vapache_user }}"
+            group: "{{ ap2_vapache_group }}"
+      when: wordpress_context_folder
+
+    - name: Unarchive the Wordpress source code, striping the archive folder name
+      become: true
+      ansible.builtin.unarchive:
+        src: "/home/{{ su_vault_vmuser1 }}/Downloads/{{ wordpress_source_name }}"
+        dest: "{{ absolute_untar_folder }}"
+        remote_src: yes
+        extra_opts:
+        - "--strip-components{{'='}}1"
+
+    - name: Reset Unarchived Folder ownership and group
+      become: true
+      ansible.builtin.file:
+        path: "{{ absolute_untar_folder }}"
+        state: directory
+        owner: "{{ ap2_vapache_user }}"
+        group: "{{ ap2_vapache_group }}"
+        recurse: yes
+    
+    - name: Config Wordpress, if flagged true
+      block:
+        - name: Create wp-config.php file
+          become: true
+          file:
+            path: "{{ absolute_untar_folder }}/wp-config.php"
+            state: touch
+            owner: "{{ ap2_vapache_user }}"
+            group: "{{ ap2_vapache_group }}"
+        - name: Add config to wp-config.php
+          become: true
+          blockinfile:
+            path: "{{ absolute_untar_folder }}/wp-config.php"
+            marker: ""
+            block: |
+              <?php
+              define( 'DB_NAME', '{{ wordpress_config_db_name }}' );
+              define( 'DB_USER', '{{ wordpress_config_db_user }}' );
+              define( 'DB_PASSWORD', '{{ wordpress_config_db_pwd }}' );
+              define( 'DB_HOST', '127.0.0.1:{{ wordpress_config_db_port }}' );
+              define( 'DB_CHARSET', 'utf8' );
+              define( 'DB_COLLATE', '' );
+              // define( 'AUTH_KEY',         'put your unique phrase here' );
+              // define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
+              // define( 'LOGGED_IN_KEY',    'put your unique phrase here' );
+              // define( 'NONCE_KEY',        'put your unique phrase here' );
+              // define( 'AUTH_SALT',        'put your unique phrase here' );
+              // define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
+              // define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
+              // define( 'NONCE_SALT',       'put your unique phrase here' );
+              // define( 'WP_MEMORY_LIMIT', '64M' );
+              // define( 'WP_MAX_MEMORY_LIMIT', '128M' );
+              // define( 'WP_SITEURL', 'http://domainname:port/subfolder' ); 
+              // define( 'WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST'] . '/path/to/wordpress' );  // let PHP handle it
+              // define( 'WP_ALLOW_REPAIR', true );
+              // define( 'FORCE_SSL_ADMIN', true );
+              // define( 'WP_HTTP_BLOCK_EXTERNAL', true );
+              // define( 'WP_ACCESSIBLE_HOSTS', 'api.wordpress.org,*.github.com' );
+              // define( 'AUTOMATIC_UPDATER_DISABLED', true );
+              // define( 'WP_AUTO_UPDATE_CORE', true );
+              // define( 'WP_AUTO_UPDATE_CORE', 'minor' );
+              // define( 'IMAGE_EDIT_OVERWRITE', true );
+              $table_prefix = 'wp_';
+              define( 'WP_DEBUG', false );
+              if ( ! defined( 'ABSPATH' ) ) {
+                      define( 'ABSPATH', __DIR__ . '/' );
+              }
+              require_once ABSPATH . 'wp-settings.php';
+        - name: Create the Database
+          become: true
+          become_user: "{{ su_vault_vmuser1 }}"
+          become_method: sudo
+          become_flags: "su -c"
+          ansible.builtin.command:
+            cmd: "{{ wordpress_cli_bin_path }} db create"
+            creates: "{{ mariadb_data_dir }}/{{ su_vault_db_name }}"
+        - name: Install the Wordpress Application
+          become: true
+          become_user: "{{ su_vault_vmuser1 }}"
+          become_method: sudo
+          become_flags: "su -c"
+          ansible.builtin.command:
+            cmd: >
+              {{ wordpress_cli_bin_path }} core install
+              --url=127.0.0.1
+              --title='{{ wordpress_config_blog_title }}'
+              --admin_user={{ wordpress_config_admin_id }}
+              --admin_password={{ wordpress_config_admin_pwd }}
+              --admin_email={{ wordpress_config_admin_email }}
+              --path={{ ap2_vapache_default_content }}
+          register: install_output
+        - name: Print output of the previous Install step
+          ansible.builtin.debug:
+            var: install_output.stdout
+      when: wordpress_config_flag       

@@ -1,0 +1,7 @@
+pub_key="/mnt/c/Users/PQR/.ssh/id_rsa_4096_Azure.pub"
+pvt_key="/mnt/c/Users/PQR/.ssh/id_rsa_4096_Azure"
+root_password="XXXXXXXXXXXX"
+az_app_sp_id="00000000-0000-0000-0000-000000000000"
+az_sp_secret="0000-0000-0000-0000-000000000000"
+az_tenant="00000000-0000-0000-0000-000000000000"
+az_subscription_id="20000000-0000-0000-0000-000000000000"
