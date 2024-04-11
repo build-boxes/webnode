@@ -1,0 +1,6 @@
+*/output-virtualbox-iso/*
+.vagrant/*
+*/output*/*
+*/.vagrant/*
+.vault_pass
+secrets.yml

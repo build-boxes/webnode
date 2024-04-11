@@ -1,0 +1,83 @@
+---
+- name: Create Users Playbook
+  hosts: all
+  vars_files:
+    - ./vars.yml
+    - ./secrets.yml
+
+  tasks:
+    - name: Create Super User 1
+      user:
+        name: "{{ vmuser1 }}"
+        password: "{{ vmpwd1 }}"
+        create_home: true
+        #group: "{{ vmuser1 }}"
+        groups: sudo,mail,users
+        shell: /bin/bash
+        expires: -1
+      become: true
+
+    - name: Create .ssh folder for Super User 1
+      file:
+        path: "/home/{{ vmuser1 }}/.ssh"
+        state: directory
+      become: true
+
+    - name: Append user Public key to Authorized_keys for Super User 1
+      shell: "cat /home/vagrant/.ssh/me.pub >> /home/{{ vmuser1 }}/.ssh/authorized_keys"
+      args:
+        creates: "/home/{{ vmuser1 }}/.ssh/authorized_keys"
+      become: true
+
+    - name: Add NOPASSWD Sudo into SUDOERS for Super User 1
+      lineinfile:
+        path: /etc/sudoers
+        line: "{{ vmuser1 }}        ALL=(ALL)       NOPASSWD: ALL"
+        validate: /usr/sbin/visudo -cf %s
+      become: true
+
+    - name: Set Home directory ownership - Super User 1
+      file:
+        path: "/home/{{ vmuser1 }}"
+        owner: "{{ vmuser1 }}"
+        group: "{{ vmuser1 }}"
+        recurse: true
+      become: true
+
+    - name: Create Super User 2
+      user:
+        name: "{{ vmuser2 }}"
+        password: "{{ vmpwd2 }}"
+        create_home: true
+        #group: "{{ vmuser2 }}"
+        groups: sudo,mail,users
+        shell: /bin/bash
+        expires: -1
+      become: true
+
+    - name: Create .ssh folder for Super User 2
+      file:
+        path: "/home/{{ vmuser2 }}/.ssh"
+        state: directory
+      become: true
+
+    - name: Append user Public key to Authorized_keys for Super User 2
+      shell: "cat /home/vagrant/.ssh/me.pub >> /home/{{ vmuser2 }}/.ssh/authorized_keys"
+      args:
+        creates: "/home/{{ vmuser2 }}/.ssh/authorized_keys"
+      become: true
+
+    - name: Add NOPASSWD Sudo into SUDOERS for Super User 2
+      lineinfile:
+        path: /etc/sudoers
+        line: "{{ vmuser2 }}        ALL=(ALL)       NOPASSWD: ALL"
+        validate: /usr/sbin/visudo -cf %s
+      become: true
+
+    - name: Set Home directory ownership - Super User 2
+      file:
+        path: "/home/{{ vmuser2 }}"
+        owner: "{{ vmuser2 }}"
+        group: "{{ vmuser2 }}"
+        recurse: true
+      become: true
