@@ -1,3 +1,4 @@
 vapache: apache2
 vapache_service: apache2
 vapache_config_folder: /etc/apache2/conf/sites-enabled
+sudo_group: sudo

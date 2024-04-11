@@ -1,0 +1,4 @@
+vapache: httpd
+vapache_service: httpd
+vapache_config_folder: /etc/httpd/conf.d
+sudo_group: wheel

@@ -6,13 +6,21 @@
     - ./vars/secrets.yml
   become: true
 
+  pre_tasks:
+    - debug: var=ansible_os_family
+    - name: Load OS specific Vars file
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "./vars/os_specific_{{ ansible_os_family }}.yml"
+        - "./vars/os_specific_default.yml"    
+
   tasks:
     - name: Create Super User 1
       user:
         name: "{{ vmuser1 }}"
         password: "{{ vmpwd1 }}"
         create_home: true
-        groups: sudo,mail,users
+        groups: "users,mail,{{ sudo_group }}"
         shell: /bin/bash
         expires: -1
 
@@ -44,7 +52,7 @@
         name: "{{ vmuser2 }}"
         password: "{{ vmpwd2 }}"
         create_home: true
-        groups: sudo,mail,users
+        groups: "users,mail,{{ sudo_group }}"
         shell: /bin/bash
         expires: -1
 
