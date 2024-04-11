@@ -2,5 +2,5 @@
 .vagrant/*
 */output*/*
 */.vagrant/*
-.vault_pass
-secrets.yml
+*/.vault_pass
+*/secrets.yml

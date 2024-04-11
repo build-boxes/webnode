@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "main.yml"
     ansible.raw_arguments = [
-      "--vault-password-file=./.vault_pass"
+      "--vault-password-file=./vars/.vault_pass"
     ]
   end
 end
