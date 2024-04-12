@@ -20,13 +20,13 @@ VirtualBox VMHDK disk images can be converted into Physical Disk images. General
 6. Boot from the Installtion media and go to Rescue Mode. Mount the Target disk from Step 4 above, Also mount its boot partition. Then using the rescue Media, install/re-install GRUB boot Loader on that disk. Then Shutdown/Reboot. Remove the Installation Media.
 7. Once the computer successfully boots from the Target Disk, you can login using vmuser1, vmuser2 or Vagrant (If account was not removed earlier) credentials.
 8. Check Network connectivity. You may need to add Network Drivers available in the webNode VMHDK image. Try adding the following (public network) to the Vagrantfile. This will add a Bidged Network Controller in the VirtualBox VM. This should enable Physical Network Card Drivers in the VM Image on disk.
-
+```
   config.vm.define "debian" do |debian|
     debian.vm.box = "raufhammad/debian12"
     debian.vm.network "private_network", ip: "192.168.56.6"
     debian.vm.network "public_network"
   end 
-  
+```  
 
 
 
