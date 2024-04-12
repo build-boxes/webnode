@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     debian.vm.network "private_network", ip: "192.168.56.6"
   end
 
-  config.vm.define "rokylin8" do |rockylin8|
+  config.vm.define "rockylin8" do |rockylin8|
     rockylin8.vm.box = "raufhammad/rockylinux8"
     rockylin8.vm.network "private_network", ip: "192.168.56.7"
   end
