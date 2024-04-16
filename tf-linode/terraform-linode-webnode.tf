@@ -25,6 +25,10 @@ provider "linode" {
   token = "adbff81229257bd8a1bd043cdcd3d0a1e6adfc5523fa18917403d0b0e42eeb08"
 }
 
+provider "local" {
+  
+}
+
 resource "linode_instance" "webnode" {
         image = "linode/debian12"
         label = "debian-webnode"
@@ -45,6 +49,8 @@ resource "linode_instance" "webnode" {
   }
 
   provisioner "local-exec" {
+    #interpreter = ["/bin/bash"]
+    working_dir = ".."
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ip_address},' --private-key ${var.pvt_key} -e 'pub_key=${var.pub_key}' main.yml"
   }
 
