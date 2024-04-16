@@ -1,4 +1,8 @@
 vapache: apache2
 vapache_service: apache2
-vapache_config_folder: /etc/apache2/conf/sites-enabled
+vapache_config_folder: /etc/apache2/sites-enabled
+vapache_config: /etc/apache2/apache2.conf
 sudo_group: sudo
+vapache_default_content: /var/www/html
+vapache_user: www-data
+vapache_group: www-data

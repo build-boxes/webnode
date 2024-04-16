@@ -130,3 +130,51 @@
         name: "{{ vapache_service }}"
         state: started
       become: true
+
+    - name: Check if Apache Default Content folder exists
+      stat: path="{{ vapache_default_content }}"
+      register: apc
+
+    - name: Delete the pre-packeged files from Apache Default Content folder
+      shell: "/usr/bin/rm -rf {{ vapache_default_content }}/* && /usr/bin/find {{ vapache_default_content }}/ -name '.*' ! -name '.' ! -name '..' -delete"
+      args:
+        removes: "{{ vapache_default_content }}/index.html"
+      become: true
+      when: apc.stat.exists
+      
+    - name: Copy the included index.html from Host to remote in the Apache Default Content folder
+      copy:
+        src: ./script-uploaded-files/index.html
+        dest: "{{ vapache_default_content }}/index.html"
+        owner: "{{ vapache_user }}"
+        group: "{{ vapache_group }}"
+        mode: '0644'
+      become: true
+      when: apc.stat.exists      
+
+    - name: Copy the included site_styles.css from Host to remote in the Apache Default Content folder
+      copy:
+        src: ./script-uploaded-files/site_styles.css
+        dest: "{{ vapache_default_content }}/site_styles.css"
+        owner: "{{ vapache_user }}"
+        group: "{{ vapache_group }}"
+        mode: '0644'
+      become: true
+      when: apc.stat.exists
+
+    - name: Copy the included icon from Host to remote in the Apache Default Content folder
+      copy:
+        src: ./script-uploaded-files/castle-icon.ico
+        dest: "{{ vapache_default_content }}/favicon.ico"
+        owner: "{{ vapache_user }}"
+        group: "{{ vapache_group }}"
+        mode: '0644'
+      become: true
+      when: apc.stat.exists
+
+    - name: Re-Start the Apache Service.
+      service: 
+        name: "{{ vapache_service }}"
+        state: restarted
+      become: true
+      when: apc.stat.exists
