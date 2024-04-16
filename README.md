@@ -29,6 +29,7 @@ VirtualBox VMHDK disk images can be converted into Physical Disk images. General
 ```
 9. Short-Commings
   * Only MBR Disk Image is created, supporting Old BIOS. No GPT Disk Image, No UEFI BIOS.
+  * Smaller sized disks images only, less then 1 TB.
 
 ## Local Images Creation - On VirtualBox
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
