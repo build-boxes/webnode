@@ -9,7 +9,10 @@ variable "root_password" {
   type = string
   sensitive = true
 }
-
+variable "api_access_token" {
+  type = string
+  sensitive = true
+}
 
 
 terraform {
@@ -22,7 +25,8 @@ terraform {
 }
 
 provider "linode" {
-  token = "adbff81229257bd8a1bd043cdcd3d0a1e6adfc5523fa18917403d0b0e42eeb08"
+  # Please get your Own Linode.com API-TOKEN/PERSONAL-ACCESS-TOKEN
+  token = var.api_access_token
 }
 
 provider "local" {
