@@ -49,7 +49,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 ## Cloud Image Creation - On Linode
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
 1. Install Ansible, Terraform (Use Windows Subsystem for Linux 2)
-2. Install some plugins in WSL2 for Ansible (Google Search, also [this link](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
+2. Install some plugins in WSL2 for Ansible (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
 3. Change into the project root folder.
 4. Change into "tf-linode" subfolder
 5. Run:
