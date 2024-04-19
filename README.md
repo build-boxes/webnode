@@ -35,7 +35,7 @@ VirtualBox VMHDK disk images can be converted into Physical Disk images. General
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
 1. Install VirtualBox
 2. Install Vagrant, Ansible (Use Windows Subsystem for Linux 2)
-3. Install some plugins in WSL2 to allow Ansible and Vagrant to access Windows VirtualBox (Google Search).
+3. Install some plugins in WSL2 to allow Ansible and Vagrant to access Windows VirtualBox (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) ).
 4. Change into the project root folder.
 5. Run:
     ```
