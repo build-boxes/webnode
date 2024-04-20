@@ -4,9 +4,11 @@ It is a Vagrant and Ansible Playbook that builds a local host with Apache2, Mari
 ## Copy VMHDK to Physical Disk
 VirtualBox VMHDK disk images can be converted into Physical Disk images. General Process is as follows:  
 1. Convert VMHDK to VDI Image.
-  
+
+  ```
   VBoxManage clonehd source.vmdk target.vhd --format vhd
-  
+  ```
+
 2. On Windows 10/ Windows 11, mount VDI image file as a Disk using Windows Disk Management tool.
   
   ![Disk Management Tool - Attach VHD file](pictures/Disk-Attach-VHD.png)
