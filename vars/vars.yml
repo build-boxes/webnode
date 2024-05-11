@@ -1,6 +1,11 @@
 ---
 ####
-# Ansible Playbook Variables
+# Ansible Playbook Variables:
+#     - Can include Role default variables that need to be overridden by this playbook.
+#     - Secret Variables are saved 'secrets.yml' in seperate file and should not be
+#       version controlled. Also they should be encrypted for safety using
+#       ansible-vault.
+#     - See ../docs sub-folder for help on how to use ansible-vault.
 ####
 su_users:
   - username: "{{ su_vault_vmuser1 }}"

@@ -1,4 +1,8 @@
 ---
+###########################
+# Ansible Playbook: WebNode
+# Source Repository: https://github.com/build-boxes/webnode
+###########################
 - name: Playbook Create WebNode 
   hosts: all
   vars_files:
@@ -6,13 +10,14 @@
     - ./vars/secrets.yml
   become: true
 
-  # pre_tasks:
-  #   - debug: var=ansible_os_family
-  #   - name: Load OS specific Vars file
-  #     ansible.builtin.include_vars: "{{ item }}"
-  #     with_first_found:
-  #       - "./vars/os_specific_{{ ansible_os_family }}.yml"
-  #       - "./vars/os_specific_default.yml"
+  # For Playbook - OS Specifc Vars.
+  pre_tasks:
+    - debug: var=ansible_os_family
+    - name: Load OS specific Vars file for playbook, if any.
+      ansible.builtin.include_vars: "{{ item }}"
+      with_first_found:
+        - "./vars/os_specific_{{ ansible_os_family }}.yml"
+        - "./vars/os_specific_default.yml"
 
   roles:
     - role: hammadrauf.sudousers

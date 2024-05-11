@@ -1,8 +1,2 @@
-ap2_vapache: httpd
-ap2_vapache_service: httpd
-ap2_vapache_config_folder: /etc/httpd/conf.d
-ap2_vapache_config: /etc/httpd/conf/httpd.conf
-su_sudo_group: wheel
-ap2_vapache_default_content: /var/www/html
-ap2_vapache_user: apache
-ap2_vapache_group: apache
+---
+# OS Specific Vars for this Playbook (Not the roles).

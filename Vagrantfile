@@ -16,8 +16,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "centos9" do |centos9|
-    #centos9.vm.box = "aracpac/centos9-stream"
-    #centos9.vm.box_version = "2.2.0"
     centos9.vm.box = "raufhammad/centos9"
     centos9.vm.network "private_network", ip: "192.168.56.8"
     centos9.vm.network "public_network"
