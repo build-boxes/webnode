@@ -2,7 +2,11 @@
 ####
 # Ansible Playbook Variables
 ####
-vmuser1: "{{ vault_vmuser1 }}"
-vmpwd1: "{{ vault_vmpwd1 }}"
-vmuser2: "{{ vault_vmuser2 }}"
-vmpwd2: "{{ vault_vmpwd2 }}"
+users:
+  - username: "{{ vault_vmuser1 }}"
+    password: "{{ vault_vmpwd1 }}"
+  - username: "{{ vault_vmuser2 }}"
+    password: "{{ vault_vmpwd2 }}"
+ap2_file_index: "script-uploaded-files/index.html"
+ap2_file_css: "script-uploaded-files/site_styles.css"
+ap2_file_ico: "script-uploaded-files/beach-ball.ico"

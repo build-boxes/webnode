@@ -7,12 +7,12 @@ body, h1, h2, p, ul {
 /* Basic styling */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #abca57;
 }
 
 header {
-    background-color: #333;
-    color: #fff;
+    background-color: #581414;
+    color: #70a36e;
     text-align: center;
     padding: 20px 0;
 }
@@ -28,14 +28,14 @@ h1 {
 .column {
     flex: 1;
     padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: #3ccef3;
+    border: 1px solid #62c3f0;
     border-radius: 5px;
     margin: 10px;
 }
 
 /* Responsive layout */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 400px) {
     .row {
         flex-direction: column;
     }

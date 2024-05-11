@@ -66,6 +66,9 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
     terraform destroy -auto-approve
     ```
   
+## Icon Attribution Link
+* [Beach-ball icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/beach-ball)
+
 
 
 
