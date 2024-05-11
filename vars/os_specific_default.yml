@@ -1,8 +1,8 @@
-vapache: apache2
-vapache_service: apache2
-vapache_config_folder: /etc/apache2/sites-enabled
-vapache_config: /etc/apache2/apache2.conf
-sudo_group: sudo
-vapache_default_content: /var/www/html
-vapache_user: www-data
-vapache_group: www-data
+ap2_vapache: apache2
+ap2_vapache_service: apache2
+ap2_vapache_config_folder: /etc/apache2/sites-enabled
+ap2_vapache_config: /etc/apache2/apache2.conf
+su_sudo_group: sudo
+ap2_vapache_default_content: /var/www/html
+ap2_vapache_user: www-data
+ap2_vapache_group: www-data

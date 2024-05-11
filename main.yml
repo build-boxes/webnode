@@ -6,13 +6,13 @@
     - ./vars/secrets.yml
   become: true
 
-  pre_tasks:
-    - debug: var=ansible_os_family
-    - name: Load OS specific Vars file
-      ansible.builtin.include_vars: "{{ item }}"
-      with_first_found:
-        - "./vars/os_specific_{{ ansible_os_family }}.yml"
-        - "./vars/os_specific_default.yml"
+  # pre_tasks:
+  #   - debug: var=ansible_os_family
+  #   - name: Load OS specific Vars file
+  #     ansible.builtin.include_vars: "{{ item }}"
+  #     with_first_found:
+  #       - "./vars/os_specific_{{ ansible_os_family }}.yml"
+  #       - "./vars/os_specific_default.yml"
 
   roles:
     - role: hammadrauf.sudousers

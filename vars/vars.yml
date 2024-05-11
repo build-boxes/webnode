@@ -2,11 +2,13 @@
 ####
 # Ansible Playbook Variables
 ####
-users:
-  - username: "{{ vault_vmuser1 }}"
-    password: "{{ vault_vmpwd1 }}"
-  - username: "{{ vault_vmuser2 }}"
-    password: "{{ vault_vmpwd2 }}"
-ap2_file_index: "script-uploaded-files/index.html"
+su_users:
+  - username: "{{ su_vault_vmuser1 }}"
+    password: "{{ su_vault_vmpwd1 }}"
+    is_super_user: true
+  - username: "{{ su_vault_vmuser2 }}"
+    password: "{{ su_vault_vmpwd2 }}"
+    is_super_user: false
+ap2_template_index: "script-uploaded-files/index.html.j2"
 ap2_file_css: "script-uploaded-files/site_styles.css"
 ap2_file_ico: "script-uploaded-files/beach-ball.ico"
