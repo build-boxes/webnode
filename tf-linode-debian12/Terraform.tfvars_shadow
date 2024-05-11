@@ -1,0 +1,4 @@
+pub_key="/path/to/User/.ssh-folder/id_rsa_Linode.pub"
+pvt_key="/path/to/User/.ssh-folder/id_rsa_Linode"
+root_password="xxxxx"
+api_access_token="YYYYYYYYYYYYYY"
