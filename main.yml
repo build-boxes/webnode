@@ -18,7 +18,13 @@
       with_first_found:
         - "./vars/os_specific_{{ ansible_os_family }}.yml"
         - "./vars/os_specific_default.yml"
+    - name: Load OS specific Secret Vars file for playbook, if any.
+      ansible.builtin.include_vars: "{{ item }}"
+      with_first_found:
+        - "./vars/vsecrets_{{ ansible_os_family }}.yml"
+        - "./vars/vsecrets_default.yml"        
 
   roles:
     - role: hammadrauf.sudousers
     - role: hammadrauf.apache2
+    - role: hammadrauf.apache_vhosts

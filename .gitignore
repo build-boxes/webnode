@@ -4,6 +4,9 @@
 */.vagrant/*
 */.vault_pass
 */secrets.yml
+*/vsecrets_*.yml
+!*/vsecrets_shadow*.yml
+!*/vsecrets_default.yml
 
 # Local .terraform directories
 **/.terraform/*

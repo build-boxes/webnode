@@ -7,6 +7,8 @@
 #       ansible-vault.
 #     - See ../docs sub-folder for help on how to use ansible-vault.
 ####
+
+# Vars for Role: hammadrauf.sudousers
 su_users:
   - username: "{{ su_vault_vmuser1 }}"
     password: "{{ su_vault_vmpwd1 }}"
@@ -14,6 +16,14 @@ su_users:
   - username: "{{ su_vault_vmuser2 }}"
     password: "{{ su_vault_vmpwd2 }}"
     is_super_user: false
+
+# Vars for Role: hammadrauf.apache2    
 ap2_template_index: "script-uploaded-files/index.html.j2"
 ap2_file_css: "script-uploaded-files/site_styles.css"
 ap2_file_ico: "script-uploaded-files/beach-ball.ico"
+#
+ap2_vapache_remove_default: false
+ap2_list_custom_content_folders:
+  - /var/www/somesite
+  - /var/www/hahahoho
+
