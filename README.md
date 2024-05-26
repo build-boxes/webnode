@@ -81,7 +81,22 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
         - ${UserName} = [User name given in ./vars/secrets.yml](https://github.com/build-boxes/webnode/blob/main/vars/secrets_shadow.yml#L20)
         - ${IPAddress} = IP returned at successfull completeion of 'terraform apply -auto-approve'
 
-  
+## Linux User Password Encryption
+### Ubuntu / Debian
+```
+$ sudo apt update
+$ sudo apt install whois 
+$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
+Password: 
+$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
+```
+### CentOS / Fedora
+```
+$ sudo dnf install expect
+$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
+Password: 
+$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
+```
 ## Icon Attribution Link
 * [Beach-ball icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/beach-ball)
 
