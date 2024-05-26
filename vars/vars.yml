@@ -13,9 +13,13 @@ su_users:
   - username: "{{ su_vault_vmuser1 }}"
     password: "{{ su_vault_vmpwd1 }}"
     is_super_user: true
+    sudo_rules: []
   - username: "{{ su_vault_vmuser2 }}"
     password: "{{ su_vault_vmpwd2 }}"
     is_super_user: false
+    sudo_rules:
+      - "ALL=(ALL)   NOPASSWD: /usr/bin/su - {{ su_vault_vmuser1 }}"
+      - "ALL=(root)   NOPASSWD: /bin/su - {{ su_vault_vmuser1 }}"
 
 # Vars for Role: hammadrauf.apache2    
 ap2_template_index: "script-uploaded-files/index.html.j2"
@@ -26,4 +30,3 @@ ap2_vapache_remove_default: false
 ap2_list_custom_content_folders:
   - /var/www/somesite
   - /var/www/hahahoho
-
