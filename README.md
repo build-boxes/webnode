@@ -81,7 +81,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
         - ${UserName} = [User name given in ./vars/secrets.yml](https://github.com/build-boxes/webnode/blob/main/vars/secrets_shadow.yml#L20)
         - ${IPAddress} = IP returned at successfull completeion of 'terraform apply -auto-approve'
 
-## Linux User Password Encryption
+## Linux User Password Hashing
 ### Ubuntu / Debian
 ```
 $ sudo apt update
