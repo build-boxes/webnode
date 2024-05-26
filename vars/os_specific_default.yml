@@ -3,7 +3,7 @@
 # Vars for Role: hammadrauf.apache_vhosts
 #
 apache_vhosts_defaults:
-  directory: /etc/apache2/sites-available/conf.ansible.d
+  directory: /etc/apache2/sites-available
   owner: apache
   group: apache
   dir_mode: "0755"

@@ -3,7 +3,7 @@
 # Vars for Role: hammadrauf.apache_vhosts
 #
 apache_vhosts_defaults:
-  directory: /etc/apache2/sites-available/conf.ansible.d
+  directory: /etc/apache2/sites-available
   owner: "www-data"
   group: "www-data"
   dir_mode: "0755"
@@ -20,4 +20,3 @@ apache_vhosts_defaults:
     sticky_session: ROUTEID
   error_log: /var/log/apache/my_error_log
   state: present
-  
