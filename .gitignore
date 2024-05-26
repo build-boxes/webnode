@@ -4,7 +4,7 @@
 */.vagrant/*
 */.vault_pass
 */secrets.yml
-*/vsecrets_*.yml
+!*/vsecrets_*.yml
 !*/vsecrets_shadow*.yml
 !*/vsecrets_default.yml
 
