@@ -3,7 +3,7 @@
 # Vars for Role: hammadrauf.apache_vhosts
 #
 apache_vhosts_defaults:
-  directory: /etc/httpd
+  directory: "{{ ap2_vapache_config_folder }}"
   owner: apache
   group: apache
   dir_mode: "0755"

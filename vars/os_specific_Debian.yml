@@ -3,7 +3,7 @@
 # Vars for Role: hammadrauf.apache_vhosts
 #
 apache_vhosts_defaults:
-  directory: /etc/apache2/sites-available
+  directory: "{{ ap2_vapache_config_folder }}"
   owner: "www-data"
   group: "www-data"
   dir_mode: "0755"
