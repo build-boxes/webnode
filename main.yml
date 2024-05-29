@@ -27,4 +27,4 @@
   roles:
     - role: hammadrauf.sudousers
     - role: hammadrauf.apache2
-    - role: hammadrauf.apache_vhosts
+
