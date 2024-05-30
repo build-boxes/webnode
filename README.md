@@ -63,7 +63,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
 1. Install Ansible, Terraform (Use Windows Subsystem for Linux 2)
 2. Install some plugins in WSL2 for Ansible (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
-3. For Azure, install Azure-CLI, see the section [below](https://github.com/build-boxes/webnode/blob/main/README.md#L116).
+3. For Azure, install Azure-CLI, see the section [below](#azure-cli).
 4. Change into the project root folder.
 5. Download required roles with the following command:
     ```
@@ -113,7 +113,7 @@ Password:
 $6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
 ```
 
-## Installing Azure-Cli on Ubuntu and WSL2 - For Terraform
+## <a name="azure-cli">Installing Azure-Cli on Ubuntu and WSL2 - For Terraform</a>
 For using Terraform on Azure Cloud, Azure-CLI needs to be installed on the local computer where these scripts will be executed. The 
 following are steps for installing Azure-CLI on Ubuntu/Debian and WSL2.
 
