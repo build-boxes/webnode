@@ -63,14 +63,14 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
 1. Install Ansible, Terraform (Use Windows Subsystem for Linux 2)
 2. Install some plugins in WSL2 for Ansible (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
-3. For Azure, install Azure-CLI, see the section below.
+3. For Azure, install Azure-CLI, see the section [below](https://github.com/build-boxes/webnode/blob/main/README.md#L116).
 4. Change into the project root folder.
 5. Download required roles with the following command:
     ```
     rm -rf ~/.ansible/roles/
     ansible-galaxy install --force -r ./roles/requirements.yml
     ```
-6. Change into "tf-linode" subfolder
+6. Change into "tf-linode*" subfolder or Change into "tf-azure*" subfolder.
 7. Run:
     ```
     terraform init
@@ -82,14 +82,14 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
     terraform destroy -auto-approve
     ```
     NOTE:  
-    The above destroy command can fail, so you may need to login to the portal to delete all resources.  
+    The above destroy command can fail, so you may need to login to the public-cloud portal to delete all resources.  
 
 9. To ssh into the Terraform remote host use:
     ```
     ssh -i /path/to/User/.ssh-folder/id_rsa_Linode ${UserName}@${IPAddress}
     ```
     * Where:
-        - ${UserName} = [User name given in ./vars/secrets.yml](https://github.com/build-boxes/webnode/blob/main/vars/secrets_shadow.yml#L20)
+        - ${UserName} = [User name given in ./vars/secrets.yml](https://github.com/build-boxes/webnode/blob/main/vars/secrets_shadow.yml#L20) OR [var.username](https://github.com/build-boxes/webnode/blob/main/tf-azure-debian12/terraform-azure-webnode-debian12.tf#L202)
         - ${IPAddress} = IP returned at successfull completeion of 'terraform apply -auto-approve'
 
 ## Linux User Password Hashing
