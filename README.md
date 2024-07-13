@@ -161,10 +161,10 @@ following are steps for installing Azure-CLI on Ubuntu/Debian and WSL2.
       "tenant": "00000000-0000-0000-0000-000000000000"
     }
     ```
-    These values map to the Terraform variables like so:
-      * appId is the client_id defined above.
-      * password is the client_secret defined above.
-      * tenant is the tenant_id defined above.
+    These values map to the Terraform variables like so:  
+      - appId is the client_id defined above.  
+      - password is the client_secret defined above.  
+      - tenant is the tenant_id defined above.  
 - Then save these values in ./tf-azure-*/Terraform.tfvars as follows. Note: the default configuration of '.gitignore' in this repsoitory will ignore this file when commiting to git remote repository.
     ```
     (ansible) wsl01@XYZ:/mnt/c/Users/PQR/Source/webnode/tf-azure-debian12$ cat Terraform.tfvars
