@@ -1,5 +1,6 @@
 ---
 roles:
   - hammadrauf.sudousers
+  - fauust.mariadb
   - hammadrauf.apache2
 

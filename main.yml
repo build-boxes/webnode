@@ -22,9 +22,26 @@
       ansible.builtin.include_vars: "{{ item }}"
       with_first_found:
         - "./vars/vsecrets_{{ ansible_os_family }}.yml"
-        - "./vars/vsecrets_default.yml"        
+        - "./vars/vsecrets_default.yml"
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+      when:
+        - ansible_os_family == 'Debian'  
+    - name: Update and upgrade yum packages
+      become: true
+      yum:
+        update_cache: yes
+        name: '*'
+        state: latest
+      when:
+        - ansible_os_family == 'RedHat'              
 
   roles:
     - role: hammadrauf.sudousers
+    - role: fauust.mariadb
     - role: hammadrauf.apache2
 

@@ -178,6 +178,12 @@ following are steps for installing Azure-CLI on Ubuntu/Debian and WSL2.
     (ansible) wsl01@XYZ:/mnt/c/Users/PQR/Source/webnode/tf-azure-debian12$
     ```
 
+## External Roles Used in this Project
+The following external ansible roles are used in this project to make it modular. Details of Role specific variables can be explored in the respective role documentation.  
+* [hammadrauf.sudousers](https://github.com/hammadrauf/sudousers)
+* [fauust.mariadb](https://github.com/fauust/ansible-role-mariadb)
+* [hammadrauf.apache2](https://github.com/hammadrauf/apache2)
+
 ## Icon Attribution Link
 * [Beach-ball icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/beach-ball)
 
