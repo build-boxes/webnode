@@ -21,3 +21,6 @@ apache_vhosts_defaults:
   error_log: /var/log/apache/my_error_log
   state: present
 
+mariadb_use_official_repo: true
+mariadb_use_official_repo_version: "10.11"
+mariadb_use_official_repo_url: "https://mirror.its.dal.ca/mariadb/yum/10.11/rhel/9.2/x86_64/"
