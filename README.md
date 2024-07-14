@@ -184,6 +184,14 @@ The following external ansible roles are used in this project to make it modular
 * [fauust.mariadb](https://github.com/fauust/ansible-role-mariadb)
 * [hammadrauf.apache2](https://github.com/hammadrauf/apache2)
 
+## Using the Installed MariaDB instance
+Make sure the user password for MariaDB contains only alpha-numeric characters. Passwords with symbols will fail to login. Currently the 
+password cannot be hashed by SHA256/512. Check later versions if hashing of passwords is enabled.    
+To connect to the mariadb instance use the command:  
+```
+$ mysql -uUSERNAME -pPASSWORD -PPORTNUMBER
+```
+
 ## Icon Attribution Link
 * [Beach-ball icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/beach-ball)
 
