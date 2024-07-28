@@ -197,3 +197,11 @@ $ mysql -uUSERNAME -pPASSWORD -PPORTNUMBER
 
 ## About this Project
 - [Andromedabay - Experiments in IAC](https://andromedabay.ddns.net/experiments-with-iac-automation/)
+
+## ToDo
+- [Integrate postfix-dovecot](https://github.com/StackFocus/ansible-role-postfix-dovecot/tree/master)
+- [Integrate Certbot](https://github.com/geerlingguy/ansible-role-certbot)
+- [Integrate Optional Rclone](https://github.com/stefangweichinger/ansible-rclone)
+- Wordpress restore from backup.
+- Testing on RHEL/Rocky9
+
