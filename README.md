@@ -183,6 +183,7 @@ The following external ansible roles are used in this project to make it modular
 * [hammadrauf.sudousers](https://github.com/hammadrauf/sudousers)
 * [fauust.mariadb](https://github.com/fauust/ansible-role-mariadb)
 * [hammadrauf.apache2](https://github.com/hammadrauf/apache2)
+For upto date list of roles used please check [roles/requirements.yml](https://github.com/build-boxes/webnode/blob/main/roles/requirements.yml) file.  
 
 ## Using the Installed MariaDB instance
 Make sure the user password for MariaDB contains only alpha-numeric characters. Passwords with symbols will fail to login. Currently the 
