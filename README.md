@@ -1,5 +1,5 @@
 # WebNode
-It is a Vagrant and Ansible Playbook that builds a local host with Apache2, MariaDB, PHP, Wordpress and Postfix Relay Roles. It can also be used to deploy it on Public Cloud providers. 2 Public Cloud provider (Linode, Azure) scripts are included.
+It is a Vagrant and Ansible Playbook that builds a local host with Apache2, MariaDB, PHP, Wordpress and Postfix Relay Roles. It can also be used to deploy it on Public Cloud providers. Currently 2 Public Cloud provider (Linode, Azure) scripts are included.
 
 ## Disclaimer
 1. There are no Guarantee of anything about this script, please use of your own accord.
