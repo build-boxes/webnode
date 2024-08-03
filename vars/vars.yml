@@ -60,6 +60,26 @@ php_enable_php_fpm: true
 php_fpm_state: started
 php_fpm_enabled_on_boot: true
 
+
+#Vars for Role: geerlingguy.certbot
+certbot_webserver: {{ ap2_vapache }}
+certbot_testmode: true       # Change to false when you have an actual registered domain.
+certbot_install_method: package
+certbot_auto_renew: true
+certbot_auto_renew_user: "{{ su_vault_vmuser1 }}"
+certbot_auto_renew_hour: "22"
+certbot_auto_renew_minute: "15"
+certbot_auto_renew_options: "--quiet"
+certbot_create_if_missing: true
+certbot_create_method: standalone
+certbot_admin_email: "{{ wp_admin_email }}"
+certbot_create_standalone_stop_services:
+  - "{{ certbot_webserver }}"
+certbot_certs:
+  - webroot: "{{ ap2_vapache_default_content }}"
+    domains:
+      - "{{ su_certbot_domain_name }}"
+
 wordpress_source_name: "wordpress-6.6.tar.gz"
 #wordpress_source_url: "https://wordpress.org/wordpress-6.6.tar.gz"
 # Actual Download URL changed to avoid HTTP 429 error during development of webnode
