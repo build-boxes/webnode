@@ -1,0 +1,5 @@
+pub_key="/path/to/User/.ssh-folder/id_rsa_Linode.pub"
+pvt_key="/path/to/User/.ssh-folder/id_rsa_Linode"
+aws_access_id="YYYYYYYYYYYYYYY"
+aws_secret_key="YYYYYYYYYYYYYYYYY"
+aws_region="us-east-2"
