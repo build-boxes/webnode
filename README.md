@@ -199,6 +199,13 @@ $ mysql -uUSERNAME -pPASSWORD -PPORTNUMBER
 ## About this Project
 - [Andromedabay - Experiments in IAC](https://andromedabay.ddns.net/experiments-with-iac-automation/)
 
+## REDHat
+```
+$ ansible-playbook -i 192.168.0.12, -u root -k main.yml
+
+TASK [geerlingguy.certbot : Enable DNF module for Rocky/AlmaLinux.] *********************************************************************************************************************************************
+fatal: [192.168.0.12]: FAILED! => {"changed": false, "cmd": "dnf config-manager --set-enabled crb\n", "delta": "0:00:01.272953", "end": "2024-08-09 16:10:49.498680", "msg": "non-zero return code", "rc": 1, "start": "2024-08-09 16:10:48.225727", "stderr": "Error: No matching repo to modify: crb.", "stderr_lines": ["Error: No matching repo to modify: crb."], "stdout": "Updating Subscription Management repositories.", "stdout_lines": ["Updating Subscription Management repositories."]}
+```
 ## ToDo
 - [Integrate postfix-dovecot](https://github.com/StackFocus/ansible-role-postfix-dovecot/tree/master)
 - [Integrate Certbot](https://github.com/geerlingguy/ansible-role-certbot)
