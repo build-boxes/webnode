@@ -22,6 +22,13 @@ Vagrant.configure("2") do |config|
     rhel.vm.network "public_network"
   end
 
+  config.vm.define "centos" do |centos|
+    centos.vm.box = "raufhammad/centos9"
+    centos.vm.network "private_network", ip: "192.168.56.9"
+    centos.vm.network "public_network"
+  end
+
+
   config.vm.provision "file", source: "/home/#{ENV['USER']}/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "main.yml"

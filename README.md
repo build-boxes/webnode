@@ -199,12 +199,19 @@ $ mysql -uUSERNAME -pPASSWORD -PPORTNUMBER
 ## About this Project
 - [Andromedabay - Experiments in IAC](https://andromedabay.ddns.net/experiments-with-iac-automation/)
 
-## REDHat
+## RedHat / CentOS
 ```
-$ ansible-playbook -i 192.168.0.12, -u root -k main.yml
+$ ansible-playbook -i 192.168.0.12, -u root -k main.yml   # RedHat9.4
 
 TASK [geerlingguy.certbot : Enable DNF module for Rocky/AlmaLinux.] *********************************************************************************************************************************************
 fatal: [192.168.0.12]: FAILED! => {"changed": false, "cmd": "dnf config-manager --set-enabled crb\n", "delta": "0:00:01.272953", "end": "2024-08-09 16:10:49.498680", "msg": "non-zero return code", "rc": 1, "start": "2024-08-09 16:10:48.225727", "stderr": "Error: No matching repo to modify: crb.", "stderr_lines": ["Error: No matching repo to modify: crb."], "stdout": "Updating Subscription Management repositories.", "stdout_lines": ["Updating Subscription Management repositories."]}
+```
+
+```
+$ vagrant up centos   # centos9 CentOS-Stream-9-20240415.0-x86_64-dvd1.iso
+
+TASK [geerlingguy.certbot : Generate new certificate if one doesn't exist.] ****
+fatal: [centos]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: {{ certbot_script }} certonly --{{ certbot_create_method  }} {{ '--hsts' if certbot_hsts else '' }} {{ '--test-cert' if certbot_testmode else '' }} --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} {{ '--webroot-path ' if certbot_create_method == 'webroot'  else '' }} {{ cert_item.webroot | default(certbot_webroot) if certbot_create_method == 'webroot' else '' }} {{ certbot_create_extra_args }} -d {{ cert_item.domains | join(',') }} {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'\n  if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'\nelse '' }} {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'\n  if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'\nelse '' }}: 'certbot_create_extra_args' is undefined. 'certbot_create_extra_args' is undefined. {{ certbot_script }} certonly --{{ certbot_create_method  }} {{ '--hsts' if certbot_hsts else '' }} {{ '--test-cert' if certbot_testmode else '' }} --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} {{ '--webroot-path ' if certbot_create_method == 'webroot'  else '' }} {{ cert_item.webroot | default(certbot_webroot) if certbot_create_method == 'webroot' else '' }} {{ certbot_create_extra_args }} -d {{ cert_item.domains | join(',') }} {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'\n  if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'\nelse '' }} {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'\n  if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'\nelse '' }}: 'certbot_create_extra_args' is undefined. 'certbot_create_extra_args' is undefined\n\nThe error appears to be in '/home/wsl01/.ansible/roles/geerlingguy.certbot/tasks/create-cert-standalone.yml': line 40, column 3, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n- name: Generate new certificate if one doesn't exist.\n  ^ here\n"}
 ```
 ## ToDo
 - [Integrate postfix-dovecot](https://github.com/StackFocus/ansible-role-postfix-dovecot/tree/master)
@@ -213,5 +220,5 @@ fatal: [192.168.0.12]: FAILED! => {"changed": false, "cmd": "dnf config-manager 
   - (Rclone is a command-line program to sync files and directories to and from different cloud storage providers)
 - Wordpress restore from backup.
 - Solution for Wordpress App IP Address for Vagrant/Public Cloud
-- Testing on RHEL/Rocky9
+- Testing on RHEL9/Centos9
 
