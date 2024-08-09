@@ -1,0 +1,24 @@
+# Configuration file for ddclient Managed by Ansible
+#
+# /etc/ddclient.conf OR /etc/ddclient/ddclient.conf
+
+daemon={{ 900 }}         
+syslog=yes               
+mail=root                
+mail-failure=root              
+pid=/var/run/ddclient.pid      
+ssl=yes
+{% if ip_discovery_method=='web' %}
+#use=if, if={{ eth0 }}                         
+use=web, web={{ checkip.dynu.com/ }}, web=ipify-ipv4
+{% else %}
+use=if, if={{ eth0 }}                         
+#use=web, web={{ checkip.dynu.com/ }}, web=ipify-ipv4
+{% endif %}
+server={{ api.dynu.com }}
+protocol={{ ddclient_protocol }}
+login={{ ddclient_login }}
+password={{ ddclient_password }}
+{% for item in DDCLIENT_DOMAIN_NAMES %}
+{{ item }}
+{% endfor %}
