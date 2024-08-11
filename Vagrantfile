@@ -28,6 +28,12 @@ Vagrant.configure("2") do |config|
     centos.vm.network "public_network"
   end
 
+  config.vm.define "ubuntu" do |ubuntu|
+    ubuntu.vm.box = "ubuntu/jammy64"
+    ubuntu.vm.network "private_network", ip: "192.168.56.10"
+    ubuntu.vm.network "public_network"
+  end
+
 
   config.vm.provision "file", source: "/home/#{ENV['USER']}/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
   config.vm.provision :ansible do |ansible|
