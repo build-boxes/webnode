@@ -6,6 +6,7 @@ roles:
   - fauust.mariadb
   - hammadrauf.apache2
   - geerlingguy.php
+  - hammadrauf.ddclient
   - geerlingguy.certbot
   - stackfocus.postfix-dovecot
   - stefangweichinger.ansible_rclone

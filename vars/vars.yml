@@ -80,6 +80,23 @@ certbot_certs:
     domains:
       - "{{ su_certbot_domain_name }}"
 
+#Vars for Role: mivek.ddclient
+include_ddclient: true
+#__ddclient_configuration_directory: /etc/ddclient
+ddclient_daemon: 900
+ddclient_ssl: yes
+ddclient_configs:
+  - protocol: dyndns2
+    login: "{{ dynu_login }}"
+    password: "{{ dynu_password }}"
+    use: "web, web=checkip.dynu.com/, web=ipify-ipv4"
+    server: "{{ dynu_server }}"
+    backupmx: null
+    mx: null
+    mxpri: null
+    zone: null
+    hosts: "{{ dynu_list_domain_names }}"
+
 wordpress_source_name: "wordpress-6.6.tar.gz"
 #wordpress_source_url: "https://wordpress.org/wordpress-6.6.tar.gz"
 # Actual Download URL changed to avoid HTTP 429 error during development of webnode

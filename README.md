@@ -52,11 +52,19 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
     ```
 6. Run:
     ```
-    vagrant up
+    vagrant up debian
+
+    OR
+
+    vagrant up centos
     ```
 7. To Destroy run:
     ```
-    vagrant destroy -f
+    vagrant destroy -f debian
+
+    OR
+
+    vagrant destroy -f centos
     ```
 
 ## Cloud Image Creation - Linode or Azure

@@ -92,6 +92,12 @@
           include_role:
             name: geerlingguy.php
 
+        - name: Perform ddclient role tasks conditionally
+          include_role:
+            name: hammadrauf.ddclient
+          when:
+            - include_ddclient 
+
         - name: Perform CertBot role tasks
           include_role:
             name: geerlingguy.certbot            
