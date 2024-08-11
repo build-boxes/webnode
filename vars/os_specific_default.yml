@@ -22,3 +22,4 @@ apache_vhosts_defaults:
     sticky_session: ROUTEID
   error_log: /var/log/apache/my_error_log
   state: present
+os_dependant_ddclient_web: "web, web=checkip.dynu.com/, web=ipify-ipv4"

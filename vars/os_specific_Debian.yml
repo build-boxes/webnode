@@ -28,3 +28,5 @@ php_packages_extra:
   - libapache2-mod-php8.2
   - php-mysql
   - php-cli
+
+os_dependant_ddclient_web: "web, web=checkip.dynu.com/, web=ipify-ipv4"

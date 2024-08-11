@@ -80,16 +80,16 @@ certbot_certs:
     domains:
       - "{{ su_certbot_domain_name }}"
 
-#Vars for Role: mivek.ddclient
+#Vars for Role: hammadrauf.ddclient
 include_ddclient: true
 #__ddclient_configuration_directory: /etc/ddclient
 ddclient_daemon: 900
-ddclient_ssl: yes
+ddclient_ssl: "yes"
 ddclient_configs:
   - protocol: dyndns2
     login: "{{ dynu_login }}"
     password: "{{ dynu_password }}"
-    use: "web, web=checkip.dynu.com/, web=ipify-ipv4"
+    use: "{{ os_dependant_ddclient_web }}"
     server: "{{ dynu_server }}"
     backupmx: null
     mx: null

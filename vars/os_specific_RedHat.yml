@@ -47,3 +47,5 @@ php_packages_extra:
 #  - libapache2-mod-php8.2
   - php-mysqlnd
   - php-cli
+
+os_dependant_ddclient_web: "web"
