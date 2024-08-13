@@ -82,7 +82,7 @@ certbot_certs:
 
 #Vars for Role: hammadrauf.ddclient
 include_ddclient: true
-#__ddclient_configuration_directory: /etc/ddclient
+#
 ddclient_daemon: 900
 ddclient_ssl: "yes"
 ddclient_configs:
@@ -97,6 +97,16 @@ ddclient_configs:
     zone: null
     hosts: "{{ dynu_list_domain_names }}"
 
+#Vars for Role: hammadrauf.noipduc
+include_noipduc: true
+#
+tar_version: "3.1.0"
+noip_check_interval: "900s"
+noip_username: "{{ noip_login }}"
+noip_password: "{{ noip_password }}"
+noip_domain_names: "{{ noip_list_domain_names }}"
+
+#WordPress related Vars
 wordpress_source_name: "wordpress-6.6.tar.gz"
 #wordpress_source_url: "https://wordpress.org/wordpress-6.6.tar.gz"
 # Actual Download URL changed to avoid HTTP 429 error during development of webnode

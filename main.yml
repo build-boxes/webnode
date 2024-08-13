@@ -98,6 +98,12 @@
           when:
             - include_ddclient 
 
+        - name: Perform noipduc role tasks conditionally
+          include_role:
+            name: hammadrauf.noipduc
+          when:
+            - include_noipduc
+
         - name: Perform CertBot role tasks
           include_role:
             name: geerlingguy.certbot            

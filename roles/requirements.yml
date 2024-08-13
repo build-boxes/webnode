@@ -7,6 +7,7 @@ roles:
   - hammadrauf.apache2
   - geerlingguy.php
   - hammadrauf.ddclient
+  - hammadrauf.noipduc
   - geerlingguy.certbot
   - stackfocus.postfix-dovecot
   - stefangweichinger.ansible_rclone

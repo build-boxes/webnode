@@ -23,17 +23,17 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "centos" do |centos|
-    centos.vm.box = "raufhammad/centos9"
+    #centos.vm.box = "raufhammad/centos9"
+	centos.vm.box = "eurolinux-vagrant/centos-stream-9"
     centos.vm.network "private_network", ip: "192.168.56.9"
     centos.vm.network "public_network"
   end
 
   config.vm.define "ubuntu" do |ubuntu|
-    ubuntu.vm.box = "ubuntu/jammy64"
+    ubuntu.vm.box = "generic/ubuntu2310"
     ubuntu.vm.network "private_network", ip: "192.168.56.10"
     ubuntu.vm.network "public_network"
   end
-
 
   config.vm.provision "file", source: "/home/#{ENV['USER']}/.ssh/id_rsa.pub", destination: "~/.ssh/me.pub"
   config.vm.provision :ansible do |ansible|
