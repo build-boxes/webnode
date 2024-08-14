@@ -100,11 +100,11 @@ ddclient_configs:
 #Vars for Role: hammadrauf.noipduc
 include_noipduc: true
 #
-tar_version: "3.1.0"
+noip_tar_version: "3.1.0"
 noip_check_interval: "900s"
-noip_username: "{{ noip_login }}"
-noip_password: "{{ noip_password }}"
-noip_domain_names: "{{ noip_list_domain_names }}"
+noip_username: "{{ su_noip_login }}"
+noip_password: "{{ su_noip_password }}"
+noip_domain_names: "{{ su_noip_list_domain_names }}"
 
 #WordPress related Vars
 wordpress_source_name: "wordpress-6.6.tar.gz"
