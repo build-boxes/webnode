@@ -76,27 +76,31 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 1. Install Ansible, Terraform (Use Windows Subsystem for Linux 2)
 2. Install some plugins in WSL2 for Ansible (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
 3. For Azure, install Azure-CLI, see the section [below](#azure-cli).
-4. Change into the project root folder.
-5. Download required roles with the following command:
+4. Install some ansible collections.
+    ```
+    ansible-galaxy collection install ansible.utils
+    ```
+5. Change into the project root folder.
+6. Download required roles with the following command:
     ```
     rm -rf ~/.ansible/roles/
     ansible-galaxy install --force -r ./roles/requirements.yml
     ```
-6. Change into "tf-linode*" subfolder or Change into "tf-azure*" subfolder.
-7. Run:
+7. Change into "tf-linode*" subfolder or Change into "tf-azure*" subfolder.
+8. Run:
     ```
     terraform init
     terraform plan
     terraform apply -auto-approve
     ```
-8. To Destroy run:
+9. To Destroy run:
     ```
     terraform destroy -auto-approve
     ```
     NOTE:  
     The above destroy command can fail, so you may need to login to the public-cloud portal to delete all resources.  
 
-9. To ssh into the Terraform remote host use:
+10. To ssh into the Terraform remote host use:
     ```
     ssh -i /path/to/User/.ssh-folder/id_rsa_Linode ${UserName}@${IPAddress}
     ```
