@@ -1,0 +1,157 @@
+###########################
+# Ansible Tasks List for: Network_Config - network_config.yml
+#   Configures Network
+# Source Repository: https://github.com/build-boxes/webnode
+###########################
+# - name: Playbook Configure Network - network_config.yml
+#   hosts: all
+#   vars_files:
+#     - ./vars/vars.yml
+#     - ./vars/secrets.yml
+#   #become: true
+
+#  tasks:
+  
+  # - name: Reboot host and wait for it to restart
+  #   reboot:
+  #     msg: "Reboot initiated by Ansible"
+  #     connect_timeout: 5
+  #     reboot_timeout: 600
+  #     pre_reboot_delay: 0
+  #     post_reboot_delay: 30
+  #     test_command: whoami
+
+  - name: Set Static ip for interface - RedHat family
+    community.general.nmcli:
+      type: ethernet
+      conn_name: "{{ nw_conn_name }}"
+      ifname: "{{ nw_ifname }}"
+      ip4: "{{ nw_ip4_cidr }}"
+      gw4: "{{ nw_gw4 }}"
+      dns4: "{{ nw_dns4_list }}"
+      state: present
+      autoconnect: true
+    when: ansible_os_family == 'RedHat'
+
+  - name: Restart networking - RedHat family
+    ansible.builtin.service:
+      name: NetworkManager
+      state: restarted
+    when: ansible_os_family == 'RedHat'
+
+  # - name: Comment out old Network config - Debian family
+  #   lineinfile:
+  #     dest: /etc/network/interfaces
+  #     regexp: "^(.*{{ nw_ifname }}.*|.*post-up.*)"
+  #     line: '# \1'
+  #     backrefs: yes
+  #     state: present
+  #   when: ansible_os_family == 'Debian'
+
+  - name: Comment out old Network config - Debian family
+    replace:
+      path: /etc/network/interfaces
+      regexp: "^(.*{{ nw_ifname }}.*|.*post-up.*)"
+      replace: '# \1'
+    when: ansible_os_family == 'Debian'
+
+  - name: Set static IP address - Debian family
+    ansible.builtin.blockinfile:
+      path: /etc/network/interfaces
+      append_newline: true
+      prepend_newline: true
+      block: |
+        auto {{ nw_ifname }}
+        iface {{ nw_ifname }} inet static
+        address {{ nw_ip4 }}
+        netmask {{ nw_netmask }}
+        gateway {{ nw_gw4 }}
+        dns-nameservers {% for item in nw_dns4_list %}{{ item }}{% if not loop.last %} {% endif %}{% endfor %}
+    when: ansible_os_family == 'Debian'
+
+  - name: Get stats of the /etc/netplan folder - if exists - Debian Family
+    ansible.builtin.stat:
+      path: /etc/netplan
+    register: p
+    when: ansible_os_family == 'Debian'
+
+  # - name: Print a debug message
+  #   ansible.builtin.debug:
+  #     msg: "netplan exists and is a directory"
+  #   when: p.stat.isdir is defined and p.stat.isdir and ansible_os_family == 'Debian'
+
+  - name: "Find all file path containing {{ nw_ifname }}"
+    ansible.builtin.find:
+      paths: /etc/netplan
+      read_whole_file: true
+      contains: "{{ nw_ifname }}"
+    register: found_files
+    when: p.stat.isdir is defined and p.stat.isdir and ansible_os_family == 'Debian'
+
+  - debug:
+      var: found_files
+
+  - name: "Read the network Config file"
+    slurp:
+      path: "{{ found_files.files[0].path }}"
+    register: n_yaml
+    when: found_files is defined and found_files.files is defined
+
+  - name: "Extract yaml data"
+    set_fact:
+      mydata: "{{ n_yaml['content'] | b64decode | from_yaml }}"
+    when: found_files is defined and found_files.files is defined
+
+  - debug:
+      var: mydata
+
+  - name: "Update ethernet details in fact"
+    ansible.utils.update_fact:
+      updates:
+        - path: "mydata.network['ethernets']['{{ nw_ifname }}']"
+          value:
+            addresses: ["{{ nw_ip4_cidr }}"]
+            routes:
+              - to: "default"
+                via: "{{ nw_gw4 }}"
+            nameservers:
+              addresses: "{{ nw_dns4_list }}"
+    register: updated_yaml
+    when: found_files is defined and found_files.files is defined
+
+  - debug:
+      var: updated_yaml    
+
+  - name: "Write back to a file"
+    copy:
+      content: "{{ updated_yaml.mydata | to_nice_yaml }}"
+      dest: "{{ found_files.files[0].path }}"
+    when: found_files is defined and found_files.files is defined
+
+  - name: "Apply Netplan configuration"
+    ansible.builtin.command: netplan apply
+    when: p.stat.isdir is defined and p.stat.isdir and ansible_os_family == 'Debian'
+
+  # - name: "Wait for 5 seconds"
+  #   ansible.builtin.wait_for:
+  #     timeout: 5
+
+  # - name: "Check networking service is started - Debian family"
+  #   ansible.builtin.service:
+  #     name: networking
+  #     state: started
+  #   when: ansible_os_family == 'Debian'
+
+  - name: "Wait for service 'networking' to be running"
+    ansible.builtin.service_facts:
+    register: result_sf
+    until: result_sf.ansible_facts.services['networking'].state == 'running'
+    retries: 3
+    delay: 5
+    when: p.stat.isdir is defined and p.stat.isdir and ansible_os_family == 'Debian'
+
+  - name: "Restart networking - Debian family"
+    ansible.builtin.service:
+      name: networking
+      state: restarted
+    when: ansible_os_family == 'Debian' and (p.stat.isdir is not defined or not p.stat.isdir)

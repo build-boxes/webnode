@@ -21,6 +21,17 @@ su_users:
       - "ALL=(ALL)   NOPASSWD: /usr/bin/su - {{ su_vault_vmuser1 }}"
       - "ALL=(root)   NOPASSWD: /bin/su - {{ su_vault_vmuser1 }}"
 
+# Network Fixed IP Config
+nw_conn_name: "System eth2"
+nw_ifname: "eth2"
+nw_ip4: "192.168.0.21"
+nw_ip4_cidr: "{{ nw_ip4 }}/24"
+nw_netmask: "255.255.255.0"
+nw_gw4: "192.168.0.1"
+nw_dns4_list:
+  - "192.168.0.1"
+  - "8.8.8.8"
+
 # Vars for Role: fauust.mariadb
 mariadb_data_dir: "/var/lib/mysql"
 mariadb_port: "{{ su_vault_mariadb_port }}"
@@ -72,6 +83,7 @@ certbot_auto_renew_minute: "15"
 certbot_auto_renew_options: "--quiet"
 certbot_create_if_missing: true
 certbot_create_method: standalone
+certbot_create_extra_args: ""
 certbot_admin_email: "{{ wp_admin_email }}"
 certbot_create_standalone_stop_services:
   - "{{ certbot_webserver }}"

@@ -42,6 +42,13 @@
     - name: Perform a Block of RHEL Family pre-tasks
       become: true
       block:
+        - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Server or Red Hat Virtualization
+          community.general.redhat_subscription:
+            state: present
+            activationkey: "{{ rhel_subscrip_activation_key }}"
+            org_id: "{{ rhel_subscrip_org_id }}"
+            pool_id: "{{ rhel_subscrip_poolid }}"
+          when: rhel_subscription_register and ansible_distribution == 'Red Hat Enterprise Linux'      
         - name: Update and upgrade yum packages
           yum:
             update_cache: yes
@@ -79,6 +86,9 @@
             mode: '1777'
             owner: "{{ su_vault_vmuser1 }}"
             group: "{{ su_vault_vmuser1 }}"
+
+        - name: Include Configure-Network Static IP tasks
+          include_tasks: network_config.yml
 
         - name: Perform mariadb role tasks
           include_role:
