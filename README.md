@@ -44,17 +44,13 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 1. Install VirtualBox
 2. Install Vagrant, Ansible (Use Windows Subsystem for Linux 2)
 3. Install some plugins in WSL2 to allow Ansible and Vagrant to access Windows VirtualBox (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) ).
-4. Install some ansible collections.
-    ```
-    ansible-galaxy collection install ansible.utils
-    ```
-5. Change into the project root folder.
-6. Download required roles with the following command:
+4. Change into the project root folder.
+5. Download required roles with the following command:
     ```
     rm -rf ~/.ansible/roles/
     ansible-galaxy install --force -r ./roles/requirements.yml
     ```
-7. Run:
+6. Run:
     ```
     vagrant up debian
 
@@ -62,7 +58,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
 
     vagrant up centos
     ```
-8. To Destroy run:
+7. To Destroy run:
     ```
     vagrant destroy -f debian
 

@@ -73,6 +73,8 @@ php_fpm_enabled_on_boot: true
 
 
 #Vars for Role: geerlingguy.certbot
+include_certbot: false
+
 certbot_webserver: "{{ ap2_vapache }}"
 certbot_testmode: true       # Change to false when you have an actual registered domain.
 certbot_install_method: package

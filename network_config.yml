@@ -142,7 +142,7 @@
   #     state: started
   #   when: ansible_os_family == 'Debian'
 
-  - name: "Wait for service 'networking' to be running"
+  - name: "Wait for service 'networking' to be running in Ubuntu"
     ansible.builtin.service_facts:
     register: result_sf
     until: result_sf.ansible_facts.services['networking'].state == 'running'
@@ -155,3 +155,12 @@
       name: networking
       state: restarted
     when: ansible_os_family == 'Debian' and (p.stat.isdir is not defined or not p.stat.isdir)
+
+  - name: "Wait for service 'networking' to be running in Debian"
+    ansible.builtin.service_facts:
+    register: result_sf
+    until: result_sf.ansible_facts.services['networking'].state == 'running'
+    retries: 3
+    delay: 5
+    when: ansible_os_family == 'Debian' and (p.stat.isdir is not defined or not p.stat.isdir)
+  

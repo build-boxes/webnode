@@ -116,7 +116,9 @@
 
         - name: Perform CertBot role tasks
           include_role:
-            name: geerlingguy.certbot            
+            name: geerlingguy.certbot
+          when:
+            - include_certbot        
       become: true
 
     - name: Adding groups to su_users list

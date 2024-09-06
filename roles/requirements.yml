@@ -11,3 +11,5 @@ roles:
   - geerlingguy.certbot
   - stackfocus.postfix-dovecot
   - stefangweichinger.ansible_rclone
+collections:
+  - ansible.utils
