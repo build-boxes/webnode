@@ -1,0 +1,6 @@
+pub_key="/home/XXX/.ssh/id_rsa.pub"
+pvt_key="/home/XXX/.ssh/id_rsa"
+gcp_svc_account="nnnn@ppppppp.iam.gserviceaccount.com"
+gcp_access_key_path="/home/XXX/.ssh/nnnn-ppppppp-key.json"
+gcp_region="us-east1"
+gcp_zone="us-east1-c"

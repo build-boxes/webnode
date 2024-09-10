@@ -1,10 +1,10 @@
 # WebNode
-It is a Vagrant and Ansible Playbook that builds a local host with Apache2, MariaDB, PHP, Wordpress and Postfix Relay Roles. It can also be used to deploy it on Public Cloud providers. Currently 2 Public Cloud provider (Linode, Azure) scripts are included.
+It is a Vagrant and Ansible Playbook that builds a local host with Apache2, MariaDB, PHP, Wordpress and Postfix Relay Roles. It can also be used to deploy it on Public Cloud providers. Currently 4 Public Cloud provider (Linode, Azure, AWS, GCP) scripts are included.
 
 ## Disclaimer
 1. There are no Guarantee of anything about this script, please use of your own accord.
-2. Hosting on Public-Cloud is NOT free. See Linode/Azure pricing before usage of this script.
-3. If you are testing this script, then make sure that all resources created on the public cloud are also deleted after the testing is completed. Otherwise you may be surprised by a costly bill from Azure or Linode.
+2. Hosting on Public-Cloud is NOT free. See Linode/Azure/AWS/GCP pricing before usage of this script.
+3. If you are testing this script, then make sure that all resources created on the public cloud are also deleted after the testing is completed. Otherwise you may be surprised by a costly bill from Azure or Linode or other Public Cloud provider.
 
 ## Copy VMHDK to Physical Disk
 VirtualBox VMHDK disk images can be converted into Physical Disk images. General Process is as follows:  
@@ -67,7 +67,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
     vagrant destroy -f centos
     ```
 
-## Cloud Image Creation - Linode or Azure
+## Cloud Image Creation - Linode, Azure, AWS or GCP
 It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debian/Ubuntu host environemnt.
 1. Install Ansible, Terraform (Use Windows Subsystem for Linux 2)
 2. Install some plugins in WSL2 for Ansible (Google Search, also [this link https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration ](https://slavid.github.io/2021/11/28/running-vagrant-ansible-windows-through-wsl2/#configuration) )
@@ -82,7 +82,7 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
     rm -rf ~/.ansible/roles/
     ansible-galaxy install --force -r ./roles/requirements.yml
     ```
-7. Change into "tf-linode*" subfolder or Change into "tf-azure*" subfolder.
+7. Change into "tf-<<Public-Cloud>>*" subfolder. For Example Change into "tf-azure*" or "tf-linode*",  subfolder.
 8. Run:
     ```
     terraform init
@@ -104,32 +104,11 @@ It can be used in Windows 10/11 (a bit difficult to setup), or you can use Debia
         - ${UserName} = [User name given in ./vars/secrets.yml](https://github.com/build-boxes/webnode/blob/main/vars/secrets_shadow.yml#L20) OR [var.username](https://github.com/build-boxes/webnode/blob/main/tf-azure-debian12/terraform-azure-webnode-debian12.tf#L202)
         - ${IPAddress} = IP returned at successfull completeion of 'terraform apply -auto-approve'
 
-## Linux User Password Hashing
-Linux User accounts name and passwords are saved in the './vars/secrets.yml' (Default-of-this-repo: It is ignored by git commits) file. The
-password to be saved in this file should be Hash-encoded, as a safe best practice. This avoids the raw password from appearing in Log files
-and accidentally being commited into the git remote server.
-
-### Hashing on Ubuntu / Debian
-```
-$ sudo apt update
-$ sudo apt install whois 
-$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
-Password: 
-$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
-```
-### Hasing on CentOS / Fedora
-```
-$ sudo dnf install expect
-$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
-Password: 
-$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
-```
-
 ## <a name="azure-cli">Installing Azure-Cli on Ubuntu and WSL2 - For Terraform</a>
 For using Terraform on Azure Cloud, Azure-CLI needs to be installed on the local computer where these scripts will be executed. The 
 following are steps for installing Azure-CLI on Ubuntu/Debian and WSL2.
 
-### Links
+### Azure-CLI Links
 - [Install Azure-CLI on Linux](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
 - [Terraform AzureRM Provider - Authentication](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#authenticating-to-azure)
 - [Tf AzureRM Auth - Service Principal with Client Secret](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret)
@@ -190,6 +169,88 @@ following are steps for installing Azure-CLI on Ubuntu/Debian and WSL2.
     (ansible) wsl01@XYZ:/mnt/c/Users/PQR/Source/webnode/tf-azure-debian12$
     ```
 
+## <a name="google-gcloud">Setting up Google Cloud Platform and Using it with Terraform</a>
+For using Terraform on Google Cloud Platform (GCP), 'gcloud CLI' needs to be installed on the local computer where these scripts will be executed. On a Windows 
+computer you can either install using Windows 11 Installation method, or use WSL2 and use a suitable Linux Installation method. These instllation steps are documented on [this Google website link](https://cloud.google.com/sdk/docs/install). Windows installed gcloud also works with WSL2 linux.
+
+OR use an adminisistrative CMD/PowerShell prompt and use 'winget' Windows Package Manager to list and then install it. 
+```
+PS C:\Windows\System32> winget search Google.CloudSDK
+PS C:\Windows\System32> winget install Google.CloudSDK
+```
+
+### Gcloud CLI - Links
+* [link 1](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference)
+* [link 2](https://cloud.google.com/sdk/gcloud/reference/auth/application-default)
+* [link actual](https://blog.avenuecode.com/how-to-use-terraform-to-create-a-virtual-machine-in-google-cloud-platform)
+  
+### Some usefull Gcloud CLI commands
+```
+gcloud auth login
+
+gcloud config set project terraform-webnode
+
+gcloud auth revoke    # Logout
+
+# -- Create Service Account and Assign Key(json file with key is downloaded upon creation only)
+
+gcloud iam service-accounts create svcaccount-terraform
+gcloud iam service-accounts keys create "${HOME}/.ssh/gcloud-svcaccount-key.json" --iam-account=svcaccount-terraform@terraform-webnode.iam.gserviceaccount.com
+
+# -- Assign/List Roles to the new service account.
+
+# List all roles assigned - run as top level owner permissions
+gcloud projects get-iam-policy "terraform-webnode" --flatten="bindings[].members" --filter="bindings.members:serviceAccount:svcaccount-terraform@terraform-webnode.iam.gserviceaccount.com" --format="table(bindings.role)"
+# reponse:
+# ROLE
+# roles/compute.admin
+# roles/iam.serviceAccountUser
+
+# Assign the minimum Required Roles to the service account - run as owner.
+gcloud projects add-iam-policy-binding "terrform-webnode" --member="user:svcaccount-terraform@terraform-webnode.iam.gserviceaccount.com" --role="roles/compute.admin"
+
+gcloud projects add-iam-policy-binding "terrform-webnode" --member="user:svcaccount-terraform@terraform-webnode.iam.gserviceaccount.com" --role="roles/iam.serviceAccountUser"
+
+#-- Move Service Account key to a well known location, for ease in pointing in *.tfvars file.
+mv gcloud-svcaccount-key.json ~/.ssh/
+
+# Login using service-account manually. Do not need to login manually if Terraform *.tf script - svc account is defined/setup correctly.
+gcloud auth activate-service-account --key-file="${HOME}/.ssh/gcloud-svcaccount-key.json"
+gcloud auth list
+gcloud auth revoke    # Logout
+
+# -- List VM Images available (need - roles/compute.viewer - role at least)
+gcloud compute images list
+
+# -- To SSH into VM using gcloud default Service-Account:
+gcloud compute ssh --zone "us-east1-b" "webnode" --project "terraform-webnode"
+
+# -- OR if root login (and/or user login) is enabled in the image, and SSH-Key has been placed then:
+ssh root@<<External (Ephemeral) IP>>
+
+```
+
+## Linux User Password Hashing
+Linux User accounts name and passwords are saved in the './vars/secrets.yml' (Default-of-this-repo: It is ignored by git commits) file. The
+password to be saved in this file should be Hash-encoded, as a safe best practice. This avoids the raw password from appearing in Log files
+and accidentally being commited into the git remote server.
+
+### Hashing on Ubuntu / Debian
+```
+$ sudo apt update
+$ sudo apt install whois 
+$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
+Password: 
+$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
+```
+### Hashing on CentOS / Fedora
+```
+$ sudo dnf install expect
+$ mkpasswd --method="sha-512" --salt="Thisisarandomsaltingstring"
+Password: 
+$6$ieMLxPFShvi6rao9$XEAU9ZDvnPtL.sDuSdRi6M79sgD9254b/0wZvftBNvMOjj3pHJBCIe04x2M.JA7gZ7MwpBWat1t4WQDFziZPw1
+```
+
 ## External Roles Used in this Project
 The following external ansible roles are used in this project to make it modular. Details of Role specific variables can be explored in the respective role documentation.  
 * [hammadrauf.sudousers](https://github.com/hammadrauf/sudousers)
@@ -211,7 +272,7 @@ $ mysql -uUSERNAME -pPASSWORD -PPORTNUMBER
 ## About this Project
 - [Andromedabay - Experiments in IAC](https://andromedabay.ddns.net/experiments-with-iac-automation/)
 
-## RedHat / CentOS
+## RedHat / CentOS errors (TO DO)
 ```
 $ ansible-playbook -i 192.168.0.12, -u root -k main.yml   # RedHat9.4
 
@@ -227,10 +288,14 @@ fatal: [centos]: FAILED! => {"msg": "The task includes an option with an undefin
 ```
 ## ToDo
 - [Integrate postfix-dovecot](https://github.com/StackFocus/ansible-role-postfix-dovecot/tree/master)
-- [Integrate Certbot](https://github.com/geerlingguy/ansible-role-certbot)
 - [Integrate Optional Rclone](https://github.com/stefangweichinger/ansible-rclone)
   - (Rclone is a command-line program to sync files and directories to and from different cloud storage providers)
 - Wordpress restore from backup.
 - Solution for Wordpress App IP Address for Vagrant/Public Cloud
 - Testing on RHEL9/Centos9
-
+- This error:
+  ```
+  TASK [Comment out old Network config - Debian family] **************************
+  fatal: [34.73.105.50]: FAILED! => {"changed": false, "msg": "Path /etc/network/interfaces does not exist !", "rc": 257}
+  ```
+-  
