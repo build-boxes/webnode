@@ -66,6 +66,25 @@
             dnf config-manager --set-enabled remi
       when:
         - ansible_os_family == 'RedHat'  
+
+    - name: Block to create Users as root
+      block:
+        - name: Perform Sudouser role tasks
+          include_role:
+            name: hammadrauf.sudousers
+
+        - name: Ensure Ansible tmp directory exists with correct permissions for "sudo su unprevilged"
+          become: true
+          ansible.builtin.file:
+            path: "/home/{{ su_vault_vmuser1 }}/.ansible/tmp"
+            state: directory
+            mode: '1777'
+            owner: "{{ su_vault_vmuser1 }}"
+            group: "{{ su_vault_vmuser1 }}"
+      become: true        
+
+  # Assuming Fixed IP is assigned to the target machine.
+
   # roles:
   #   - role: hammadrauf.sudousers
   #   - role: fauust.mariadb
@@ -75,21 +94,6 @@
   tasks:
     - name: Block to include roles as user root
       block:
-        - name: Perform Sudouser role tasks
-          include_role:
-            name: hammadrauf.sudousers
-
-        - name: Ensure Ansible tmp directory exists with correct permissions for "sudo su unprevilged"
-          ansible.builtin.file:
-            path: "/home/{{ su_vault_vmuser1 }}/.ansible/tmp"
-            state: directory
-            mode: '1777'
-            owner: "{{ su_vault_vmuser1 }}"
-            group: "{{ su_vault_vmuser1 }}"
-
-        - name: Include Configure-Network Static IP tasks
-          include_tasks: network_config.yml
-
         - name: Perform mariadb role tasks
           include_role:
             name: fauust.mariadb

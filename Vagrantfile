@@ -5,8 +5,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "debian" do |debian|
     debian.vm.box = "generic/debian12"
+    debian.vm.provider :virtualbox do |vb|
+      vb.name = "webnode-debian12"
+    end    
     debian.vm.network "private_network", ip: "192.168.56.6"
-    debian.vm.network "public_network"
+    debian.vm.network "public_network", bridge: "Realtek Gaming 2.5GbE Family Controller"
   end
 
   config.vm.define "rocky" do |rocky|
