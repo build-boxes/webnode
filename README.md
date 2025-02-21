@@ -232,6 +232,77 @@ ssh root@<<External (Ephemeral) IP>>
 
 ```
 
+## <a name="amazon-aws">Setting up Amazon AWS and Using it with Terraform</a>
+For using Terraform on Amazon Cloud (AWS), 'aws CLI' needs to be installed on the local computer where these scripts will be executed. On a Windows 
+computer you can either install using Windows 11 Installation method. These instllation steps are documented on [this Amazon website link](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+
+OR use an adminisistrative CMD/PowerShell prompt and use 'winget' Windows Package Manager to list and then install it. 
+```
+PS C:\Windows\System32> winget search Amazon.AWSCLI
+PS C:\Windows\System32> winget install Amazon.AWSCLI
+```
+
+### AWS CLI - Links
+* [link 1](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+* [link 2](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-using.html)
+* [link 3](https://medium.com/@shanmorton/set-up-terraform-tf-and-aws-cli-build-a-simple-ec2-1643bcfcb6fe)
+  
+### Some usefull AWS CLI commands
+```
+# Create a New User for Terraform
+PS C:\Users\PQRS>  aws iam create-user --user-name terraform2
+{
+    "User": {
+        "Path": "/",
+        "UserName": "terraform2",
+        "UserId": "AAAAAABBBBBCCCCC",
+        "Arn": "arn:aws:iam::12456789753:user/terraform2",
+        "CreateDate": "2025-02-21T05:38:54+00:00"
+    }
+}
+
+# Create Access-Key for this new user. Note down Access Key ID and SecretAccessKey.
+PS C:\Users\PQRS>  aws iam create-access-key --user-name terraform2
+{
+    "AccessKey": {
+        "UserName": "terraform2",
+        "AccessKeyId": "QQQQQAAAAATTTTTT",
+        "Status": "Active",
+        "SecretAccessKey": "SOME_RANDOM_SECRET_KEY",
+        "CreateDate": "2025-02-21T05:39:14+00:00"
+    }
+}
+
+# Create a IAM Group for Organizing PowerUsers
+PS C:\Users\PQRS>  aws iam create-group --group-name PowerUsers2
+{
+    "Group": {
+        "Path": "/",
+        "GroupName": "PowerUsers2",
+        "GroupId": "AGPATRLD7BEGYLAIBILQ5",
+        "Arn": "arn:aws:iam::12456789753:group/PowerUsers2",
+        "CreateDate": "2025-02-21T05:43:11+00:00"
+    }
+}
+
+# Add the new User to this Group
+PS C:\Users\PQRS>  aws iam add-user-to-group --group-name PowerUsers2 --user-name terraform2
+PS C:\Users\PQRS>
+
+# Get the Full 'PowerUserAccess' Policy ARN Name.
+PS C:\Users\PQRS>  aws iam list-policies --query 'Policies[?PolicyName == `PowerUserAccess`].{PolicyName: PolicyName,Arn: Arn}'
+[
+    {
+        "PolicyName": "PowerUserAccess",
+        "Arn": "arn:aws:iam::aws:policy/PowerUserAccess"
+    }
+]
+
+# Attach this Policy to the Group and hence to the user.
+PS C:\Users\PQRS> aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/PowerUserAccess --group-name PowerUsers2
+PS C:\Users\PQRS>
+```
+
 ## Linux User Password Hashing
 Linux User accounts name and passwords are saved in the './vars/secrets.yml' (Default-of-this-repo: It is ignored by git commits) file. The
 password to be saved in this file should be Hash-encoded, as a safe best practice. This avoids the raw password from appearing in Log files
