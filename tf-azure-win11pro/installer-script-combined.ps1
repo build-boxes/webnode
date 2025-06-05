@@ -14,5 +14,4 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Invoke-WebRequest -Uri 'https://community.chocolatey.org/install.ps1' -UseBasicParsing | Invoke-Expression
 };
 choco install python --version=3.12 -y;
-pip install ansible;
 exit 0;
