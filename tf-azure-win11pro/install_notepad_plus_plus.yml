@@ -1,6 +1,6 @@
 ---
 - name: Install Notepad++ on Windows Machines
-  hosts: poc_vdi_group
+  hosts: all
   tasks:
     - name: Download Notepad++ installer
       ansible.windows.win_get_url:

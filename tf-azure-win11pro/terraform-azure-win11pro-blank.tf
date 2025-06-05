@@ -169,91 +169,15 @@ resource "azurerm_windows_virtual_machine" "myvm" {
   }
 
   computer_name = "hostname"
-  admin_username = var.username
+  admin_username = var.root_username
   admin_password = var.root_password
 
   identity {
     type = "SystemAssigned"
   }
 
-  # admin_ssh_key {
-  #   username   = var.username
-  #   public_key = file(var.pub_key)
-  # }
-
-  # provisioner "remote-exec" {
-  #   inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
-
-  #   connection {
-  #     host        = azurerm_windows_virtual_machine.myvm.public_ip_address
-  #     type        = "ssh"
-  #     user        = var.username
-  #     private_key = file(var.pvt_key)
-  #   }
-  # }
-
-  #provisioner "local-exec" {
-  #  #interpreter = ["/bin/bash"]
-  #  working_dir = ".."
-  #  command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u '${var.username}' -i '${azurerm_windows_virtual_machine.myvm.public_ip_address},' --private-key ${var.pvt_key} -e 'pub_key=${var.pub_key}' main.yml"
-  #}
-
 }
 
-
-## Setup winRM
-
-/*
-  resource "azurerm_virtual_machine_extension" "setup_winrm" {
-  count                = 1
-  name                 = "enable-winrm-1"
-  virtual_machine_id   = azurerm_windows_virtual_machine.myvm.id
-  publisher            = "Microsoft.Compute"
-  type                 = "CustomScriptExtension"
-  type_handler_version = "1.10"
-
-  settings = jsonencode({
-    commandToExecute = "powershell.exe -Command \"if (-Not (Test-Path -Path 'C:\\Temp')) { New-Item -ItemType Directory -Path 'C:\\Temp' }; $cert = New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\\LocalMachine\\My; $thumbprint = $cert.Thumbprint; $certPath = 'C:\\Temp\\winrm-cert.cer'; Export-Certificate -Cert \\\"Cert:\\LocalMachine\\My\\$thumbprint\\\" -FilePath $certPath; Import-Certificate -FilePath $certPath -CertStoreLocation Cert:\\LocalMachine\\Root; New-Item -Path WSMan:\\localhost\\Listener -Transport HTTPS -Address * -CertificateThumbprint $thumbprint -Force; Set-Item -Path WSMan:\\localhost\\Service\\Auth\\Basic -Value $true; New-NetFirewallRule -Name \\\"WinRM_HTTPS\\\" -DisplayName \\\"WinRM over HTTPS\\\" -Protocol TCP -LocalPort 5986 -Action Allow; exit 0\""
-  })
-}
- */
-
-# resource "azurerm_virtual_machine_extension" "setup_python3" {
-#   count                = 1
-#   name                 = "enable-python3"
-#   virtual_machine_id   = azurerm_windows_virtual_machine.myvm.id
-#   publisher            = "Microsoft.Compute"
-#   type                 = "CustomScriptExtension"
-#   type_handler_version = "1.10"
-
-#   settings = jsonencode({
-#     commandToExecute = "powershell.exe -Command \"winget install Python.Python.3.12 --disable-interactivity ; exit 0\""
-#   })
-# }
-
-/*
-  resource "azurerm_virtual_machine_extension" "run_powershell_script" {
-  name                 = "RunPowerShellScript"
-  virtual_machine_id   = azurerm_windows_virtual_machine.example.id
-  publisher            = "Microsoft.Compute"
-  type                 = "CustomScriptExtension"
-  type_handler_version = "1.10"
-
-  settings = <<SETTINGS
-  {
-    # A web Host is needed, or see 2nd method below.
-    "fileUris": ["https://example.com/scripts/my_script.ps1"],
-    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File my_script.ps1"
-  }
-  SETTINGS
-} */
-
-/*
-# PowerShell commands to convert *.ps1 file to Base64String
-$scriptPath = "C:\path\to\your_script.ps1"
-$base64Script = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content -Path $scriptPath -Raw)))
-$base64Script
-*/
 
 resource "azurerm_virtual_machine_extension" "script_ps1_combined_installer" {
   name                 = "RunPS1Script_Combined"
@@ -263,43 +187,18 @@ resource "azurerm_virtual_machine_extension" "script_ps1_combined_installer" {
   type_handler_version = "1.10"
 
   settings = jsonencode({
-    commandToExecute = "powershell.exe -Command \"if (-Not (Test-Path -Path 'C:\\Temp')) { New-Item -ItemType Directory -Path 'C:\\Temp' }; $cert = New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\\LocalMachine\\My; $thumbprint = $cert.Thumbprint; $certPath = 'C:\\Temp\\winrm-cert.cer'; Export-Certificate -Cert \\\"Cert:\\LocalMachine\\My\\$thumbprint\\\" -FilePath $certPath; Import-Certificate -FilePath $certPath -CertStoreLocation Cert:\\LocalMachine\\Root; New-Item -Path WSMan:\\localhost\\Listener -Transport HTTPS -Address * -CertificateThumbprint $thumbprint -Force; Set-Item -Path WSMan:\\localhost\\Service\\Auth\\Basic -Value $true; New-NetFirewallRule -Name \\\"WinRM_HTTPS\\\" -DisplayName \\\"WinRM over HTTPS\\\" -Protocol TCP -LocalPort 5986 -Action Allow; if (-Not (Get-Command choco -ErrorAction SilentlyContinue)) { Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-WebRequest -Uri 'https://community.chocolatey.org/install.ps1' -UseBasicParsing | Invoke-Expression }; choco install python --version=3.12 -y; pip install ansible; exit 0\""
+    commandToExecute = "powershell.exe -Command \"if (-Not (Test-Path -Path 'C:\\Temp')) { New-Item -ItemType Directory -Path 'C:\\Temp' }; $cert = New-SelfSignedCertificate -DnsName $env:COMPUTERNAME -CertStoreLocation Cert:\\LocalMachine\\My; $thumbprint = $cert.Thumbprint; $certPath = 'C:\\Temp\\winrm-cert.cer'; Export-Certificate -Cert \\\"Cert:\\LocalMachine\\My\\$thumbprint\\\" -FilePath $certPath; Import-Certificate -FilePath $certPath -CertStoreLocation Cert:\\LocalMachine\\Root; New-Item -Path WSMan:\\localhost\\Listener -Transport HTTPS -Address * -CertificateThumbprint $thumbprint -Force; Set-Item -Path WSMan:\\localhost\\Service\\Auth\\Basic -Value $true; New-NetFirewallRule -Name \\\"WinRM_HTTPS\\\" -DisplayName \\\"WinRM over HTTPS\\\" -Protocol TCP -LocalPort 5986 -Action Allow; if (-Not (Get-Command choco -ErrorAction SilentlyContinue)) { Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-WebRequest -Uri 'https://community.chocolatey.org/install.ps1' -UseBasicParsing | Invoke-Expression }; choco install python --version=3.12 -y; exit 0\""
   })
 }
 
-
-
-
 ## Setup Ansible
 
-resource "ansible_group" "ansible_inventory_group" {
-  name = "all"
-}
-
-resource "ansible_host" "windows_vms" {
-  count = 1
+resource "ansible_host" "mywebpc" {
   name   = azurerm_windows_virtual_machine.myvm.public_ip_address
-  groups = ["ansible_inventory_group"]
+  groups = ["webpc"]
   variables = {
     "ansible_connection"                   = "winrm"
-    "ansible_user"                         = var.username
-    "ansible_password"                     = var.root_password
-    "ansible_port"                         = "5986"
-    "ansible_winrm_scheme"                 = "https"
-    "ansible_winrm_server_cert_validation" = "ignore"
-    "ansible_winrm_transport"              = "basic"
-  }
-}
-
-resource "ansible_playbook" "install_notepad_plus_plus" {
-  count      = 1
-  name       = ansible_host.windows_vms[0].name
-  playbook   = "install_notepad_plus_plus.yml"
-  groups     = ["ansible_inventory_group"]
-  replayable = true
-  extra_vars = {
-    "ansible_connection"                   = "winrm"
-    "ansible_user"                         = var.username
+    "ansible_user"                         = var.root_username
     "ansible_password"                     = var.root_password
     "ansible_port"                         = "5986"
     "ansible_winrm_scheme"                 = "https"
@@ -307,6 +206,24 @@ resource "ansible_playbook" "install_notepad_plus_plus" {
     "ansible_winrm_transport"              = "basic"
   }
   depends_on = [azurerm_virtual_machine_extension.script_ps1_combined_installer]
+}
+
+resource "ansible_playbook" "install_notepad_plus_plus" {
+  name       = ansible_host.mywebpc.name
+  playbook   = "install_notepad_plus_plus.yml"
+  groups     = ["all"]
+  replayable = true
+  extra_vars = {
+    "ansible_connection"                   = "winrm"
+    "ansible_user"                         = var.root_username
+    "ansible_password"                     = var.root_password
+    "ansible_port"                         = "5986"
+    "ansible_winrm_scheme"                 = "https"
+    "ansible_winrm_server_cert_validation" = "ignore"
+    "ansible_winrm_transport"              = "basic"
+    
+  }
+  depends_on = [ansible_host.mywebpc]
 }
 
 #############
@@ -326,12 +243,6 @@ variable "resource_group_name" {
   description = "Resource group name, should be unique in your Azure subscription."
 }
 
-variable "username" {
-  type        = string
-  description = "The username for the local account that will be created on the new VM."
-  default     = "terraform"
-}
-
 ##
 
 variable "pub_key" {
@@ -339,6 +250,11 @@ variable "pub_key" {
 }
 
 variable "pvt_key" {
+  type = string
+  sensitive = true
+}
+
+variable "root_username" {
   type = string
   sensitive = true
 }
@@ -379,4 +295,12 @@ output "resource_group_name" {
 
 output "public_ip_address" {
   value = azurerm_windows_virtual_machine.myvm.public_ip_address
+}
+
+output "ansible_outputs" {
+  value = ansible_playbook.install_notepad_plus_plus.ansible_playbook_stdout
+}
+
+output "ansible_errors" {
+  value = ansible_playbook.install_notepad_plus_plus.ansible_playbook_stderr
 }
