@@ -1,0 +1,19 @@
+---
+- name: Install Notepad++ on Windows Machines
+  hosts: poc_vdi_group
+  tasks:
+    - name: Download Notepad++ installer
+      ansible.windows.win_get_url:
+        url: https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.5.7/npp.8.5.7.Installer.exe
+        dest: C:\Temp\npp-installer.exe
+
+    - name: Install Notepad++
+      ansible.windows.win_package:
+        path: C:\Temp\npp-installer.exe
+        arguments: /S
+        state: present
+
+    - name: Clean up installer
+      ansible.windows.win_file:
+        path: C:\Temp\npp-installer.exe
+        state: absent
