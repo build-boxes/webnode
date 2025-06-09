@@ -21,9 +21,9 @@ Proxmox can store KVM VM images and LXC VM Images (CT templates) as template for
 
 
 ## Win11pro Manual Creation - Screen Shots
-<image href="./media/1-screen-capture-proxmox-os.png"> width="716" height="540" >Win11Pro Manual Creation - 1. OS</image>  
-<image href="./media/2-screen-capture-proxmox-system.png"> width="716" height="540" >Win11Pro Manual Creation - 2. System</image>  
-<image href="./media/3-screen-capture-proxmox-disk.png"> width="716" height="540" >Win11Pro Manual Creation - 3. Disk</image>  
-<image href="./media/4-screen-capture-proxmox-cpu.png"> width="716" height="540" >Win11Pro Manual Creation - 4. CPU</image>  
-<image href="./media/5-screen-capture-proxmox-memory.png"> width="716" height="540" >Win11Pro Manual Creation - 5. Memory</image>  
-<image href="./media/6-screen-capture-proxmox-network.png"> width="716" height="540" >Win11Pro Manual Creation - 6. Network</image>  
+<img src="./media/1-screen-capture-proxmox-os.png" alt="Win11Pro Manual Creation - 1. OS" width="716" height="540" >Win11Pro Manual Creation - 1. OS</image>  
+<img src="./media/2-screen-capture-proxmox-system.png" alt="Win11Pro Manual Creation - 2. System" width="716" height="540" >Win11Pro Manual Creation - 2. System</image>  
+<img src="./media/3-screen-capture-proxmox-disk.png" alt="Win11Pro Manual Creation - 3. Disk" width="716" height="540" >Win11Pro Manual Creation - 3. Disk</image>  
+<img src="./media/4-screen-capture-proxmox-cpu.png" alt="Win11Pro Manual Creation - 4. CPU" width="716" height="540" >Win11Pro Manual Creation - 4. CPU</image>  
+<img src="./media/5-screen-capture-proxmox-memory.png" alt="Win11Pro Manual Creation - 5. Memory" width="716" height="540" >Win11Pro Manual Creation - 5. Memory</image>  
+<img src="./media/6-screen-capture-proxmox-network.png" alt="Win11Pro Manual Creation - 6. Network" width="716" height="540" >Win11Pro Manual Creation - 6. Network</image>  
