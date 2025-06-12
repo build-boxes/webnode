@@ -97,3 +97,5 @@ root@pve:~#
     ```
     PS C:\Users\Administrator> Remove-AppxPackage -Package Microsoft.WidgetsPlatformRuntime_1.6.1.0_x64__8wekyb3d8bbwe -allusers
     ```
+
+1. After sucessfull shutdown, convert the QEMU VM to Template.
