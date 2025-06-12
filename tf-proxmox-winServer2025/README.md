@@ -1,5 +1,5 @@
 # WinServer2025 - Template - Notes
-Proxmox can store KVM VM images and LXC VM Images (CT templates) as template for quick deployment. LXC VMs share kernel with the Proxmox host, so only Linux is a possibility.
+Proxmox can store KVM VM images and LXC Container Images (CT templates) as template for quick deployment. LXC VMs share kernel with the Proxmox host, so only Linux is a possibility.
 
 ## WinServer2025 - Minimum Requirements
 - Disk size - 32GB
