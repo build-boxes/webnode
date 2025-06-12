@@ -52,9 +52,9 @@ root@pve:~#
     - This will install all Qemu drivers for Windows.
 
 1. Instal Qemu-Agent
-    a. Go to the mounted ISO in explorer
-    a. The guest agent installer is in the directory guest-agent
-    a. Execute the installer with double click (either qemu-ga-x86_64.msi (64-bit) or qemu-ga-i386.msi (32-bit)
+    1. Go to the mounted ISO in explorer
+    1. The guest agent installer is in the directory guest-agent
+    1. Execute the installer with double click (either qemu-ga-x86_64.msi (64-bit) or qemu-ga-i386.msi (32-bit)
     After that the qemu-guest-agent should be up and running. You can validate this in the list of Window Services, or in a PowerShell with:
     ```
     PS C:\Users\Administrator> Get-Service QEMU-GA
