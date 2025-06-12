@@ -20,6 +20,10 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.75.0"
     }
+    time = {
+          source = "hashicorp/time"
+          version = "0.13.1"
+    }
   }
 }
 
@@ -70,8 +74,10 @@ variable "PROXMOX_VE_INSECURE" {
 
 
 variable "prefix" {
+  # This is used to rename the host to this name.description
+  # also used as a prefix for text and log files names.
   type    = string
-  default = "prefix"
+  default = "eagle03"
 }
 
 variable "pub_key_file" {
@@ -170,7 +176,7 @@ data "cloudinit_config" "example" {
     content_type = "text/cloud-config"
     content      = <<-EOF
       #cloud-config
-      hostname: example
+      hostname: ${var.prefix}
       timezone: America/Toronto
       users:
         - name: ${jsonencode(var.superuser_username)}
@@ -206,9 +212,8 @@ data "cloudinit_config" "example" {
       # NB this script will be executed by the cloudbase-init service once, but to be safe, make sure its idempotent.
       # NB the output of this script appears on the cloudbase-init.log file when the
       #    debug mode is enabled, otherwise, you will only have the exit code.
-      ## --- Set up Administrators SSH Authorized Keys ---
+      # Set up Administrators SSH Authorized Keys
       Add-Content -Force -Path "C:\ProgramData\ssh\administrators_authorized_keys" -Value ${jsonencode(trimspace(file("${var.pub_key_file}")))};icacls.exe "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
-      ## ---
       Start-Transcript -Append "C:\cloudinit-config-example.ps1.log"
       function Write-Title($title) {
         Write-Output "`n#`n# $title`n#"
@@ -283,22 +288,41 @@ resource "proxmox_virtual_environment_vm" "example" {
   # see https://registry.terraform.io/providers/bpg/proxmox/0.75.0/docs/resources/virtual_environment_vm#initialization
   initialization {
     user_data_file_id = proxmox_virtual_environment_file.example_ci_user_data.id
+    # # >>> Fixed IP -- Start
+    # # Use following if need fixed IP Address, otherwise comment out
+    # ip_config {
+    #   ipv4 {
+    #     address = "192.168.4.70/24"
+    #     gateway = "192.168.4.1"
+    #   }
+    # }
+    # dns {
+    #   servers = ["192.168.4.1"]
+    # }
+    # # >>> Fixed IP -- End
   }
+}
+
+resource "time_sleep" "wait_12_minutes" {
+  depends_on = [proxmox_virtual_environment_vm.example]
+  # 12 minutes sleep. I have a slow Proxmox Host :(
+  create_duration = "12m"
 }
 
 # # NB this can only connect after about 3m15s (because the ssh service in the
 # #    windows base image is configured as "delayed start").
 resource "null_resource" "ssh_into_vm" {
+  depends_on = [time_sleep.wait_12_minutes]
   provisioner "remote-exec" {
     connection {
       target_platform = "windows"
       type            = "ssh"
-      host            = proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]
+      host            = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0] )
       user            = var.superuser_username
       password        = var.superuser_password
       private_key = file("${var.pvt_key_file}")
       agent = false
-      timeout = "12m"   # 12 minutes timeout. I have a slow Proxmox Host :(
+      timeout = "2m"
     }
     # NB this is executed as a batch script by cmd.exe.
     inline = [
@@ -307,10 +331,10 @@ resource "null_resource" "ssh_into_vm" {
       EOF
     ]
   }
-  depends_on = [proxmox_virtual_environment_vm.example]
 }
 
 
 output "ip" {
-  value = proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]
+  value = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0] )
+  #proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]
 }
