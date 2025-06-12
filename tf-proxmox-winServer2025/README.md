@@ -92,7 +92,7 @@ Download Link: [https://cloudbase.it/cloudbase-init/#download](https://cloudbase
 PS C:\Users\Administrator> ipconfig /release
 ```
 
-1. Install Cloudbase-init as a Service, auto restart
+1. Install Cloudbase-init as a Service, in the end select Sysprep and Shutdown option.
     - If Errors due to Packages, then remove that package and retry.
     ```
     PS C:\Users\Administrator> Remove-AppxPackage -Package Microsoft.WidgetsPlatformRuntime_1.6.1.0_x64__8wekyb3d8bbwe -allusers
