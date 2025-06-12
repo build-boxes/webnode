@@ -62,7 +62,7 @@ root@pve:~#
     Status   Name               DisplayName
     ------   ----               -----------
     Running  QEMU-GA            QEMU Guest Agent
-```
+    ```
     If it is not running, you can use the Services control panel to start it and make sure that it will start automatically on the next boot.
 
 1. Install OpenSSH Server
