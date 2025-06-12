@@ -1,0 +1,13 @@
+# This is a Shadow file, illustrating what the actual file should contain.
+#pub_key="/home/XXX/.ssh/vagrant.pub"
+#pvt_key="/home/XXX/.ssh/vagrant"
+#pub_key2="/home/XXX/.ssh/id_rsa.pub"
+#pvt_key2="/home/XXX/.ssh/id_rsa"
+#root_password="xxxx"
+# Proxmox vars
+proxmox_node_address="192.168.4.20"
+proxmox_node_name="pve"
+PROXMOX_VE_ENDPOINT="https://192.168.4.20:8006/api2/json"
+PROXMOX_VE_USERNAME="terraform-prov@pve"
+PROXMOX_VE_PASSWORD="XXXXXXXX"
+PROXMOX_VE_INSECURE=true
