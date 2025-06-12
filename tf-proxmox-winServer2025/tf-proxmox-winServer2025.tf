@@ -71,20 +71,32 @@ variable "PROXMOX_VE_INSECURE" {
 
 variable "prefix" {
   type    = string
-  default = "example-terraform-windows"
+  default = "prefix"
 }
 
-variable "username" {
+variable "pub_key_file" {
+  type = string
+  default = "~/.ssh/id_rsa.pub"
+}
+
+variable "pvt_key_file" {
+  type = string
+  default = "~/.ssh/id_rsa"
+  sensitive = true
+}
+
+variable "superuser_username" {
   type    = string
   default = "terraform"
 }
 
-variable "password" {
+variable "superuser_password" {
   type      = string
   sensitive = true
   # NB the password will be reset by the cloudbase-init SetUserPasswordPlugin plugin.
   # NB this value must meet the Windows password policy requirements.
   #    see https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/password-must-meet-complexity-requirements
+  # Password with @ symbol has issues in cloudbase-init scripts escape-sequencing in terraform ".tf" files
   default = "HeyH0Password"
 }
 
@@ -131,17 +143,41 @@ data "cloudinit_config" "example" {
       EOF
   }
   part {
+    filename     = "AdministratorPWD.ps1"
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      #ps1_sysnative
+      # this is a PowerShell script.
+      # NB this script will be executed as the cloudbase-init user (which is in the Administrators group).
+      # NB this script will be executed by the cloudbase-init service once, but to be safe, make sure its idempotent.
+      # NB the output of this script appears on the cloudbase-init.log file when the
+      #    debug mode is enabled, otherwise, you will only have the exit code.
+      Start-Transcript -Append "C:\cloudinit-config-example.ps1.log"
+      # Define the new password
+      $SecurePassword = ConvertTo-SecureString "${var.superuser_password}" -AsPlainText -Force
+      
+      # Get the administrator account
+      $AdminAccount = Get-LocalUser -Name "Administrator"
+      
+      # Set the new password for the administrator account
+      Set-LocalUser -Name "Administrator" -Password $SecurePassword
+      
+      # Confirm the password was updated
+      Write-Output "Administrator password has been updated successfully."
+      EOF
+  }  
+  part {
     content_type = "text/cloud-config"
     content      = <<-EOF
       #cloud-config
       hostname: example
       timezone: America/Toronto
       users:
-        - name: ${jsonencode(var.username)}
-          passwd: ${jsonencode(var.password)}
+        - name: ${jsonencode(var.superuser_username)}
+          passwd: ${jsonencode(var.superuser_password)}
           primary_group: Administrators
-          ssh_authorized_keys:
-            - ${jsonencode(trimspace(file("~/.ssh/id_rsa.pub")))}
+          # ssh_authorized_keys:
+          #   - ${jsonencode(trimspace(file("${var.pub_key_file}")))}
       # these runcmd commands are concatenated together in a single batch script and then executed by cmd.exe.
       # NB this script will be executed as the cloudbase-init user (which is in the Administrators group).
       # NB this script will be executed by the cloudbase-init service once, but to be safe, make sure its idempotent.
@@ -170,6 +206,9 @@ data "cloudinit_config" "example" {
       # NB this script will be executed by the cloudbase-init service once, but to be safe, make sure its idempotent.
       # NB the output of this script appears on the cloudbase-init.log file when the
       #    debug mode is enabled, otherwise, you will only have the exit code.
+      ## --- Set up Administrators SSH Authorized Keys ---
+      Add-Content -Force -Path "C:\ProgramData\ssh\administrators_authorized_keys" -Value ${jsonencode(trimspace(file("${var.pub_key_file}")))};icacls.exe "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+      ## ---
       Start-Transcript -Append "C:\cloudinit-config-example.ps1.log"
       function Write-Title($title) {
         Write-Output "`n#`n# $title`n#"
@@ -205,7 +244,7 @@ resource "proxmox_virtual_environment_file" "example_ci_user_data" {
 resource "proxmox_virtual_environment_vm" "example" {
   name      = var.prefix
   node_name = var.proxmox_node_name
-  tags      = sort(["windows-2025-uefi", "example", "terraform"])
+  tags      = sort(["windows-2025", "example", "terraform"])
   clone {
     vm_id = data.proxmox_virtual_environment_vm.windows_template.vm_id
     full  = true
@@ -221,22 +260,17 @@ resource "proxmox_virtual_environment_vm" "example" {
   network_device {
     bridge = "vmbr0"
   }
-  disk {
+  disk {      # Boot Disk, Size can be increased here. Then manually Increase Volume size inside Windows-2025.
     interface   = "scsi0"
     file_format = "raw"
     iothread    = true
     ssd         = true
     discard     = "on"
-    size        = 40
+    size        = 32     # minimum size of the Template image disk.
   }
-  disk {
-    interface   = "scsi1"
-    file_format = "raw"
-    iothread    = true
-    ssd         = true
-    discard     = "on"
-    size        = 16
-  }
+  ## Add additional Disks here, if required.
+  ##
+  ##
   agent {
     enabled = true
     trim    = true
@@ -250,15 +284,21 @@ resource "proxmox_virtual_environment_vm" "example" {
   initialization {
     user_data_file_id = proxmox_virtual_environment_file.example_ci_user_data.id
   }
-  # NB this can only connect after about 3m15s (because the ssh service in the
-  #    windows base image is configured as "delayed start").
+}
+
+# # NB this can only connect after about 3m15s (because the ssh service in the
+# #    windows base image is configured as "delayed start").
+resource "null_resource" "ssh_into_vm" {
   provisioner "remote-exec" {
     connection {
       target_platform = "windows"
       type            = "ssh"
-      host            = self.ipv4_addresses[index(self.network_interface_names, "Ethernet")][0]
-      user            = var.username
-      password        = var.password
+      host            = proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]
+      user            = var.superuser_username
+      password        = var.superuser_password
+      private_key = file("${var.pvt_key_file}")
+      agent = false
+      timeout = "12m"   # 12 minutes timeout. I have a slow Proxmox Host :(
     }
     # NB this is executed as a batch script by cmd.exe.
     inline = [
@@ -267,7 +307,9 @@ resource "proxmox_virtual_environment_vm" "example" {
       EOF
     ]
   }
+  depends_on = [proxmox_virtual_environment_vm.example]
 }
+
 
 output "ip" {
   value = proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]

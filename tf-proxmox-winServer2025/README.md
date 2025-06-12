@@ -99,3 +99,29 @@ root@pve:~#
     ```
 
 1. After sucessfull shutdown, convert the QEMU VM to Template.
+
+## Using Terraform to Clone Qemu VM template on Proxmox
+```
+terraform init
+terraform plan
+terraform apply -auto-approve
+terrform destroy -auto-approve
+```
+
+## Terraform Apply - Errors
+- Proxmox Snippets folder permission
+    - Folder permissions are automatically reset after few hours
+    - Permanent Fix - To Do
+    - Temporary Fix:
+        - SSH to Promox Host
+            ```
+            root@pve:~# ls -lart /var/lib/vz/snippets/
+            total 16
+            drwxr-xr-x 6 root           root           4096 Jun 12 16:30 ..
+            drwxr-xr-x 2 root           root           4096 Jun 12 16:31 .
+            root@pve:~# chmod -R 775 /var/lib/vz/snippets/
+            root@pve:~# ls -lart /var/lib/vz/snippets/
+            total 16
+            drwxr-xr-x 6 root           root           4096 Jun 12 16:30 ..
+            drwxrwxr-x 2 root           root           4096 Jun 12 16:31 .
+            ```
