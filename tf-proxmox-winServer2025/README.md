@@ -66,31 +66,31 @@ root@pve:~#
     If it is not running, you can use the Services control panel to start it and make sure that it will start automatically on the next boot.
 
 1. Install OpenSSH Server
-```
-PS C:\Users\Administrator> Add-WindowsCapability -Online -Name OpenSSH
-PS C:\Users\Administrator> Add-WindowsCapability -Online -Name OpenSSH.Server
-PS C:\Users\Administrator> Set-Service -Name sshd -StartupType Automatic
-PS C:\Users\Administrator> Set-Service -Name ssh-agent -StartupType Automatic
-PS C:\Users\Administrator> netsh advfirewall firewall add rule name="SSH Port" dir=in action=allow protocol=TCP localport=22 remoteip=any
-PS C:\Users\Administrator> Start-Service sshd
-PS C:\Users\Administrator> get-service sshd
-```
+    ```
+    PS C:\Users\Administrator> Add-WindowsCapability -Online -Name OpenSSH
+    PS C:\Users\Administrator> Add-WindowsCapability -Online -Name OpenSSH.Server
+    PS C:\Users\Administrator> Set-Service -Name sshd -StartupType Automatic
+    PS C:\Users\Administrator> Set-Service -Name ssh-agent -StartupType Automatic
+    PS C:\Users\Administrator> netsh advfirewall firewall add rule name="SSH Port" dir=in action=allow protocol=TCP localport=22 remoteip=any
+    PS C:\Users\Administrator> Start-Service sshd
+    PS C:\Users\Administrator> get-service sshd
+    ```
 
 1. Enable Remote RDP Sessions
-```
-PS C:\Users\Administrator> Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
-PS C:\Users\Administrator> Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-```
+    ```
+    PS C:\Users\Administrator> Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+    PS C:\Users\Administrator> Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    ```
 
-1. Download Cloudbase-init Installer. Do not launch it yet.
-Download Link: [https://cloudbase.it/cloudbase-init/#download](https://cloudbase.it/cloudbase-init/#download)
+1. Download Cloudbase-init Installer. Do not launch it yet.  
+    - Download Link: [https://cloudbase.it/cloudbase-init/#download](https://cloudbase.it/cloudbase-init/#download)
 
 1. Shutdown the VM. Remove all CD Roms while stopped.
 
 1. Start the VM and Login again as Adminstrator. Temporarily release Network.
-```
-PS C:\Users\Administrator> ipconfig /release
-```
+    ```
+    PS C:\Users\Administrator> ipconfig /release
+    ```
 
 1. Install Cloudbase-init as a Service, in the end select Sysprep and Shutdown option.
     - If Errors due to Packages, then remove that package and retry.
