@@ -255,8 +255,8 @@ resource "proxmox_virtual_environment_vm" "example" {
     full  = true
   }
   cpu {
-    #type  = "host"
-    type  = "x86-64-v2-AES"
+    type  = "host"
+    #type  = "x86-64-v2-AES"
     cores = 2
   }
   memory {
