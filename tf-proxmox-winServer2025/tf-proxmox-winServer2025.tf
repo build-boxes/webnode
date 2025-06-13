@@ -77,7 +77,7 @@ variable "prefix" {
   # This is used to rename the host to this name.description
   # also used as a prefix for text and log files names.
   type    = string
-  default = "eagle03"
+  default = "eagle01"
 }
 
 variable "pub_key_file" {
@@ -290,15 +290,15 @@ resource "proxmox_virtual_environment_vm" "example" {
     user_data_file_id = proxmox_virtual_environment_file.example_ci_user_data.id
     # # >>> Fixed IP -- Start
     # # Use following if need fixed IP Address, otherwise comment out
-    # ip_config {
-    #   ipv4 {
-    #     address = "192.168.4.70/24"
-    #     gateway = "192.168.4.1"
-    #   }
-    # }
-    # dns {
-    #   servers = ["192.168.4.1"]
-    # }
+    ip_config {
+      ipv4 {
+        address = "192.168.4.70/24"
+        gateway = "192.168.4.1"
+      }
+    }
+    dns {
+      servers = ["192.168.4.1"]
+    }
     # # >>> Fixed IP -- End
   }
 }
