@@ -1,0 +1,14 @@
+# This is a Shadow file, illustrating what the actual file should contain.
+# 
+pub_key_file="/home/XXXX/.ssh/id_rsa.pub"
+pvt_key_file="/home/XXXX/.ssh/id_rsa"
+superuser_username="terraform"
+# Password with @ symbol has issues in cloudbase-init scripts escape-sequencing in terraform ".tf" files
+superuser_password="XXXXXXXX"
+# Proxmox vars
+proxmox_node_address="192.168.4.20"
+proxmox_node_name="pve"
+PROXMOX_VE_ENDPOINT="https://192.168.4.20:8006/api2/json"
+PROXMOX_VE_USERNAME="terraform-prov@pve"
+PROXMOX_VE_PASSWORD="XXXXXXXX"
+PROXMOX_VE_INSECURE=true
