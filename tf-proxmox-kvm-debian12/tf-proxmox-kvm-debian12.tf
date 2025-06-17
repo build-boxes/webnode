@@ -227,29 +227,29 @@ resource "proxmox_virtual_environment_vm" "example" {
     user_data_file_id = proxmox_virtual_environment_file.example_ci_user_data.id
     # # >>> Fixed IP -- Start
     # # Use following if need fixed IP Address, otherwise comment out
-    # ip_config {
-    #   ipv4 {
-    #     address = "192.168.4.80/24"
-    #     gateway = "192.168.4.1"
-    #   }
-    # }
-    # dns {
-    #   servers = ["192.168.4.1"]
-    # }
+    ip_config {
+      ipv4 {
+        address = "192.168.4.80/24"
+        gateway = "192.168.4.1"
+      }
+    }
+    dns {
+      servers = ["192.168.4.1"]
+    }
     # # >>> Fixed IP -- End
   }
 }
 
-resource "time_sleep" "wait_12_minutes" {
+resource "time_sleep" "wait_1_minutes" {
   depends_on = [proxmox_virtual_environment_vm.example]
   # 12 minutes sleep. I have a slow Proxmox Host :(
-  create_duration = "12m"
+  create_duration = "1m"
 }
 
 # # NB this can only connect after about 3m15s (because the ssh service in the
 # #    windows base image is configured as "delayed start").
 resource "null_resource" "ssh_into_vm" {
-  depends_on = [time_sleep.wait_12_minutes]
+  depends_on = [time_sleep.wait_1_minutes]
   provisioner "remote-exec" {
     connection {
       target_platform = "unix"
