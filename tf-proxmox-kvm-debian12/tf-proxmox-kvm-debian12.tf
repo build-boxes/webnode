@@ -227,13 +227,12 @@ resource "proxmox_virtual_environment_vm" "example" {
     user_data_file_id = proxmox_virtual_environment_file.example_ci_user_data.id
     # # >>> Fixed IP -- Start
     # # Use following if need fixed IP Address, otherwise comment out
-    ip_config {
-      ipv4 {
-        # address = "192.168.4.80/24"
-        # gateway = "192.168.4.1"
-        address = "dhcp"
-      }
-    }
+    # ip_config {
+    #   ipv4 {
+    #     address = "192.168.4.80/24"
+    #     gateway = "192.168.4.1"
+    #   }
+    # }
     # dns {
     #   servers = ["192.168.4.1"]
     # }
@@ -255,7 +254,7 @@ resource "null_resource" "ssh_into_vm" {
     connection {
       target_platform = "unix"
       type            = "ssh"
-      host            = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "eth0")][0] )
+      host            = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[1][0] )
       user            = var.superuser_username
       password        = var.superuser_password
       private_key = file("${var.pvt_key_file}")
@@ -273,6 +272,6 @@ resource "null_resource" "ssh_into_vm" {
 
 
 output "ip" {
-  value = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "eth0")][0] )
+  value = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[1][0] )
   #proxmox_virtual_environment_vm.example.ipv4_addresses[index(proxmox_virtual_environment_vm.example.network_interface_names, "Ethernet")][0]
 }
