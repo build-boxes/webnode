@@ -265,11 +265,11 @@ resource "null_resource" "ssh_into_vm" {
     inline = [
       <<-EOF
       echo "Sucessfully logged in as user: '$(whoami)'";
-      USERID="terraform";
-      BASHRC="/home/$USERID/.bashrc";
-      if [ -d "/home/$USERID" ] && [ -f "$BASHRC" ]; then
+      USERID="${var.superuser_username}";
+      BASHRC="/home/${var.superuser_username}/.bashrc";
+      if [ -d "/home/${var.superuser_username}" ] && [ -f "$BASHRC" ]; then
         grep -q "/usr/sbin" "$BASHRC" || echo 'export PATH="/usr/sbin:$PATH"' >> "$BASHRC"
-        echo "Added /usr/sbin to user $PATH"
+        echo "Added /usr/sbin to user PATH variable"
       fi;
       EOF
     ]
