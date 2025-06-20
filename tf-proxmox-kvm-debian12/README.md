@@ -8,6 +8,11 @@ Proxmox VE can store Qemu KVM VM (Virtual Machine) images and LXC Container Imag
 - Cores - Minimum 2 cores - 1 GHz or faster.
 
 
+## Debian12 - Gnome Desktop Customization
+```
+sudo apt install -y -no-install-recommends chrome-gnome-shell gnome-shell-extension-dashtodock gnome-shell-extension-manager gnome-shell-extensions gnome-shell-extensions-extra gnome-tweaks lua5.4 jq imagemagick
+```
+
 ## WinServer2025 - Sysprep
 [Refernce 1 - https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--generalize--a-windows-installation?view=windows-11](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--generalize--a-windows-installation?view=windows-11)  
 [Reference 2 - https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/boot-windows-to-audit-mode-or-oobe?view=windows-11](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/boot-windows-to-audit-mode-or-oobe?view=windows-11)  

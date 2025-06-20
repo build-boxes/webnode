@@ -108,7 +108,7 @@ variable "superuser_password" {
 
 # see https://registry.terraform.io/providers/bpg/proxmox/0.75.0/docs/data-sources/virtual_environment_vms
 data "proxmox_virtual_environment_vms" "debian12_templates" {
-  tags = ["debian", "debian12", "desktop", "docker", "kde", "template"]
+  tags = ["debian", "debian12", "desktop", "docker", "gnome", "template"]
 }
 
 # see https://registry.terraform.io/providers/bpg/proxmox/0.75.0/docs/data-sources/virtual_environment_vm
