@@ -264,11 +264,12 @@ resource "null_resource" "ssh_into_vm" {
     # NB this is executed as a batch script by cmd.exe.
     inline = [
       <<-EOF
-      whoami;
+      echo "Sucessfully logged in as user: '$(whoami)'";
       USERID="terraform";
       BASHRC="/home/$USERID/.bashrc";
       if [ -d "/home/$USERID" ] && [ -f "$BASHRC" ]; then
         grep -q "/usr/sbin" "$BASHRC" || echo 'export PATH="/usr/sbin:$PATH"' >> "$BASHRC"
+        echo "Added /usr/sbin to user $PATH"
       fi;
       EOF
     ]
