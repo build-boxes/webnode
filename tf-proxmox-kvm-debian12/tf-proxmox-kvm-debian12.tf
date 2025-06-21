@@ -271,6 +271,30 @@ resource "null_resource" "ssh_into_vm" {
         grep -q "/usr/sbin" "$BASHRC" || echo 'export PATH="/usr/sbin:$PATH"' >> "$BASHRC"
         echo "Added /usr/sbin to user PATH variable"
       fi;
+      gnome-extensions enable dash-to-dock@micxgx.gmail.com
+      echo "Enabled dash-to-dock extension for user."
+      # Set dock position to LEFT
+      gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
+      # Make the dock extend to full height (panel-like)
+      gsettings set org.gnome.shell.extensions.dash-to-dock extend-height true
+      # Disable autohide if you want it always visible
+      gsettings set org.gnome.shell.extensions.dash-to-dock autohide false
+      # Enable Intellihide
+      gsettings set org.gnome.shell.extensions.dash-to-dock intellihide true
+      # Optional: Set fixed icon size
+      gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32
+      # Optional: Make background fully opaque
+      gsettings set org.gnome.shell.extensions.dash-to-dock transparency-mode 'FIXED'
+      gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity 0.4
+      echo "Dash to Dock configured as a left-side panel."
+      # Set Windows Buttons
+      gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+      echo "Window buttons updated: minimize and maximize enabled."
+      # Fix Flathub inclusion in gnome-software app for user
+      gnome-software --quit
+      flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      echo "Fixed Flathub inclusion in gnome-software App store for User"
       EOF
     ]
   }
