@@ -304,8 +304,14 @@ resource "null_resource" "restart_vm" {
   }
 }
 
-resource "null_resource" "launch_ansible_build" {
+resource "time_sleep" "wait_another_1_minute" {
   depends_on = [null_resource.restart_vm]
+  # 12 minutes sleep. I have a slow Proxmox Host :(
+  create_duration = "1m"
+}
+
+resource "null_resource" "launch_ansible_build" {
+  depends_on = [time_sleep.wait_another_1_minute]
   provisioner "remote-exec" {
     connection {
       target_platform = "unix"
