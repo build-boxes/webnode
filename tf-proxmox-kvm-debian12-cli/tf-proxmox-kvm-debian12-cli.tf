@@ -302,16 +302,22 @@ resource "null_resource" "restart_vm" {
       EOF
     ]
   }
+}
 
+resource "null_resource" "launch_ansible_build" {
+  depends_on = [null_resource.restart_vm]
   provisioner "remote-exec" {
-    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
-
     connection {
+      target_platform = "unix"
+      type        = "ssh"      
       host        = coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[1][0] )
-      type        = "ssh"
       user        = var.superuser_username
+      password        = var.superuser_password      
       private_key = file("${var.pvt_key_file}")
+      agent = false
+      timeout = "3m"
     }
+    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
   }
 
   provisioner "local-exec" {
@@ -319,7 +325,6 @@ resource "null_resource" "restart_vm" {
     working_dir = ".."
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u '${var.superuser_username}' -i '${coalesce(try(split("/",proxmox_virtual_environment_vm.example.initialization[0].ip_config[0].ipv4[0].address)[0], null),proxmox_virtual_environment_vm.example.ipv4_addresses[1][0] )},' --private-key ${var.pvt_key_file} -e 'pub_key=${var.pub_key_file}' main.yml"
   }
-
 }
 
 output "ip" {
