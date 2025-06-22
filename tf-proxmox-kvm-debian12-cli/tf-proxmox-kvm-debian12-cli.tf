@@ -323,7 +323,7 @@ resource "null_resource" "launch_ansible_build" {
       agent = false
       timeout = "3m"
     }
-    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
+    inline = ["sudo apt update", "sudo apt install -y python3 python3-pip", "echo Done!"]
   }
 
   provisioner "local-exec" {
